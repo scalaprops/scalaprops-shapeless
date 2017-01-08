@@ -1,4 +1,4 @@
-package org.scalacheck
+package scalaprops
 package derive
 
 import shapeless._
@@ -8,14 +8,12 @@ import shapeless._
  * a case class or an ADT (or more generally, a type represented
  * `Generic`ally as an `HList` or a `Coproduct`).
  *
- * The instances derived here are more specific than the default ones
- * derived for any type by `Shrink.shrinkAny`.
- *
  * Use like
  *     val shrink: Shrink[T] = MkShrink[T].shrink
  * or look up for an implicit `MkShrink[T]`.
  */
 trait MkShrink[T] {
+
   /** `Shrink[T]` instance built by this `MkShrink[T]` */
   def shrink: Shrink[T]
 }
@@ -28,30 +26,26 @@ object MkShrink {
       def shrink = shrink0
     }
 
-  private def lazyxmap[T, U](from: T => U, to: U => T)(st: => Shrink[T]): Shrink[U] = Shrink[U] { u: U ⇒
-    st.shrink(to(u)).map(from)
-  }
+  private[this] def lazyxmap[T, U](from: T => U, to: U => T)(st: => Shrink[T]): Shrink[U] =
+    Shrink.shrink[U] { u =>
+      st(to(u)).map(from)
+    }
 
-  implicit def genericProduct[P, L <: HList]
-   (implicit
-     gen: Generic.Aux[P, L],
-     shrink: Lazy[MkHListShrink[L]]
-   ): MkShrink[P] =
+  implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
+                                             shrink: Lazy[MkHListShrink[L]]): MkShrink[P] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
 
-  implicit def genericCoproduct[S, C <: Coproduct]
-   (implicit
-     gen: Generic.Aux[S, C],
-     shrink: Lazy[MkCoproductShrink[C]]
-   ): MkShrink[S] =
+  implicit def genericCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
+                                                   shrink: Lazy[MkCoproductShrink[C]]): MkShrink[S] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
 }
 
 trait MkHListShrink[L <: HList] {
+
   /** `Shrink[T]` instance built by this `MkHListShrink[T]` */
   def shrink: Shrink[L]
 }
@@ -65,23 +59,21 @@ object MkHListShrink {
     }
 
   implicit val hnil: MkHListShrink[HNil] =
-    instance(Shrink.shrinkAny)
+    instance(Shrink.empty)
 
-  implicit def hcons[H, T <: HList]
-   (implicit
-     headShrink: Strict[Shrink[H]],
-     tailShrink: MkHListShrink[T]
-   ): MkHListShrink[H :: T] =
+  implicit def hcons[H, T <: HList](implicit headShrink: Strict[Shrink[H]],
+                                    tailShrink: MkHListShrink[T]): MkHListShrink[H :: T] =
     instance(
-      Shrink {
+      Shrink.shrink {
         case h :: t =>
-          headShrink.value.shrink(h).map(_ :: t) #:::
-            tailShrink.shrink.shrink(t).map(h :: _)
+          headShrink.value(h).map(_ :: t) #:::
+            tailShrink.shrink(t).map(h :: _)
       }
     )
 }
 
 trait MkCoproductShrink[C <: Coproduct] {
+
   /** `Shrink[T]` instance built by this `MkCoproductShrink[T]` */
   def shrink: Shrink[C]
 }
@@ -95,21 +87,18 @@ object MkCoproductShrink {
     }
 
   implicit val cnil: MkCoproductShrink[CNil] =
-    instance(Shrink.shrinkAny)
+    instance(Shrink.empty)
 
-  implicit def ccons[H, T <: Coproduct]
-   (implicit
-     headShrink: Strict[Shrink[H]],
-     tailShrink: MkCoproductShrink[T],
-     headSingletons: Strict[Singletons[H]],
-     tailSingletons: Strict[Singletons[T]]
-   ): MkCoproductShrink[H :+: T] =
+  implicit def ccons[H, T <: Coproduct](implicit headShrink: Strict[Shrink[H]],
+                                        tailShrink: MkCoproductShrink[T],
+                                        headSingletons: Strict[Singletons[H]],
+                                        tailSingletons: Strict[Singletons[T]]): MkCoproductShrink[H :+: T] =
     instance(
-      Shrink {
+      Shrink.shrink {
         case Inl(h) =>
-          tailSingletons.value().toStream.map(Inr(_)) ++ headShrink.value.shrink(h).map(Inl(_))
+          tailSingletons.value().toStream.map(Inr(_)) ++ headShrink.value.apply(h).map(Inl(_))
         case Inr(t) =>
-          headSingletons.value().toStream.map(Inl(_)) ++ tailShrink.shrink.shrink(t).map(Inr(_))
+          headSingletons.value().toStream.map(Inl(_)) ++ tailShrink.shrink.apply(t).map(Inr(_))
       }
     )
 }

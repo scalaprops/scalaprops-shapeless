@@ -1,4 +1,4 @@
-package org.scalacheck
+package scalaprops
 
 object SingletonsTestsDefinitions {
 

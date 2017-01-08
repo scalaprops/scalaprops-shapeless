@@ -1,4 +1,4 @@
-package org.scalacheck
+package scalaprops
 
 object SizeTestsDefinitions {
   // see https://github.com/rickynils/scalacheck/issues/305
@@ -30,6 +30,6 @@ object SizeTestsDefinitions {
   case class Branch(left: Tree, right: Tree) extends Tree
 
   object Tree {
-    implicit val recursive = derive.Recursive[Tree](Gen.const(Leaf))
+    implicit val recursive = derive.Recursive[Tree](Gen.value(Leaf))
   }
 }

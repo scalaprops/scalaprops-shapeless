@@ -1,5 +1,14 @@
+scalafmtConfig in ThisBuild := Some((baseDirectory in LocalRootProject).value / ".scalafmt.conf")
 
-lazy val `scalacheck-shapeless` = project
+lazy val tagName = Def.setting {
+  s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+}
+lazy val tagOrHash = Def.setting {
+  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+  else tagName.value
+}
+
+lazy val `scalaprops-shapeless` = project
   .in(file("."))
   .aggregate(coreJVM, coreJS, testJVM, testJS)
   .settings(commonSettings)
@@ -11,19 +20,16 @@ lazy val core = crossProject
     name := coreName,
     moduleName := coreName,
     libraryDependencies ++= Seq(
-      "org.scalacheck" %%% "scalacheck" % "1.13.4",
+      "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value,
       "com.chuusai" %%% "shapeless" % "2.3.2"
-    ),
-    mimaPreviousArtifacts := {
-      if (scalaBinaryVersion.value == "2.12")
-        Set()
-      else
-        Set(organization.value %% moduleName.value % "1.1.0")
-    }
+    )
   )
   .jsSettings(
-    postLinkJSEnv := NodeJSEnv().value,
-    scalaJSUseRhino in Global := false,
+    scalacOptions += {
+      val a = (baseDirectory in LocalRootProject).value.toURI.toString
+      val g = "https://raw.githubusercontent.com/scalaprops/scalaprops-shapeless/" + tagOrHash.value
+      s"-P:scalajs:mapSourceURI:$a->$g/"
+    },
     scalaJSStage in Test := FastOptStage
   )
 
@@ -33,11 +39,10 @@ lazy val coreJS = core.js
 lazy val test = crossProject
   .dependsOn(core)
   .settings(commonSettings)
-  .settings(noPublishSettings)
   .settings(
-    libraryDependencies += "com.lihaoyi" %%% "utest" % "0.4.4" % "test",
-    testFrameworks += new TestFramework("utest.runner.Framework")
+    libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % scalapropsVersion.value % "test"
   )
+  .settings(noPublishSettings)
   .jsSettings(
     scalaJSStage in Test := FastOptStage
   )
@@ -45,53 +50,66 @@ lazy val test = crossProject
 lazy val testJVM = test.jvm
 lazy val testJS = test.js
 
-lazy val coreName = "scalacheck-shapeless_1.13"
+lazy val coreName = "scalaprops-shapeless"
 
 lazy val commonSettings = Seq(
-  organization := "com.github.alexarchambault"
-) ++ compileSettings ++ publishSettings
+    releaseTagName := tagName.value,
+    releaseCrossBuild := true,
+    resolvers += Opts.resolver.sonatypeReleases,
+    commands += Command.command("updateReadme")(updateReadmeTask),
+    organization := "com.github.scalaprops",
+    scalapropsVersion := "0.3.5"
+  ) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
+
+lazy val unusedWarnings = Seq("-Ywarn-unused", "-Ywarn-unused-import")
 
 lazy val compileSettings = Seq(
-  resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
-    Resolver.sonatypeRepo("snapshots")
-  ),
-  libraryDependencies ++= {
-    if (scalaVersion.value.startsWith("2.10."))
-      Seq(compilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full))
-    else
-      Seq()
+    scalacOptions in (Compile, doc) ++= {
+    val tag = tagOrHash.value
+    Seq(
+      "-sourcepath",
+      (baseDirectory in LocalRootProject).value.getAbsolutePath,
+      "-doc-source-url",
+      s"https://github.com/scalaprops/scalaprops-shapeless/tree/${tag}€{FILE_PATH}.scala"
+    )
   },
-  scalacOptions += "-target:jvm-1.7"
-)
+    scalacOptions ++= unusedWarnings,
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-unchecked",
+      "-Xlint",
+      "-Xfuture",
+      "-language:existentials",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-Yno-adapted-args"
+    )
+  ) ++ Seq(Compile, Test).flatMap(c => scalacOptions in (c, console) --= unusedWarnings)
 
 lazy val publishSettings = Seq(
-  homepage := Some(url("https://github.com/alexarchambault/scalacheck-shapeless")),
+  homepage := Some(url("https://github.com/scalaprops/scalaprops-shapeless")),
   licenses := Seq(
     "Apache 2.0" -> url("http://opensource.org/licenses/Apache-2.0")
   ),
-  scmInfo := Some(ScmInfo(
-    url("https://github.com/alexarchambault/scalacheck-shapeless.git"),
-    "scm:git:github.com/alexarchambault/scalacheck-shapeless.git",
-    Some("scm:git:git@github.com:alexarchambault/scalacheck-shapeless.git")
-  )),
-  developers := List(Developer(
-    "alexarchambault",
-    "Alexandre Archambault",
-    "",
-    url("https://github.com/alexarchambault")
-  )),
+  scmInfo := Some(
+    ScmInfo(
+      url("https://github.com/scalaprops/scalaprops-shapeless.git"),
+      "scm:git:github.com/scalaprops/scalaprops-shapeless.git",
+      Some("scm:git:git@github.com:scalaprops/scalaprops-shapeless.git")
+    )),
+  developers := List(
+    Developer(
+      "xuwei-k",
+      "Kenji Yoshida",
+      "",
+      url("https://github.com/xuwei-k")
+    )),
   publishMavenStyle := true,
-  pomIncludeRepository := { _ => false },
-  publishTo := Some {
-    val nexus = "https://oss.sonatype.org/"
-    if (isSnapshot.value)
-      "snapshots" at nexus + "content/repositories/snapshots"
-    else
-      "releases" at nexus + "service/local/staging/deploy/maven2"
+  pomIncludeRepository := { _ =>
+    false
   },
   credentials ++= {
-    Seq("SONATYPE_USER", "SONATYPE_PASS").map(sys.env.get) match {
+    Seq("SONATYPE_USER", "SONATYPE_PASSWORD").map(sys.env.get) match {
       case Seq(Some(user), Some(pass)) =>
         Seq(Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", user, pass))
       case _ =>
@@ -103,7 +121,57 @@ lazy val publishSettings = Seq(
 lazy val noPublishSettings = Seq(
   publish := (),
   publishLocal := (),
+  PgpKeys.publishSigned := (),
+  PgpKeys.publishLocalSigned := (),
   publishArtifact := false
+)
+
+lazy val updateReadmeTask = { state: State =>
+  val extracted = Project.extract(state)
+  val v = extracted get version
+  val org = extracted get organization
+  val modules = coreName :: Nil
+  val snapshotOrRelease = if (extracted get isSnapshot) "snapshots" else "releases"
+  val readme = "README.md"
+  val readmeFile = file(readme)
+  val newReadme = Predef
+    .augmentString(IO.read(readmeFile))
+    .lines
+    .map { line =>
+      val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
+      if (line.startsWith("libraryDependencies") && matchReleaseOrSnapshot) {
+        val i = modules.map("\"" + _ + "\"").indexWhere(line.contains)
+        s"""libraryDependencies += "$org" %% "${modules(i)}" % "$v" % "test""""
+      } else line
+    }
+    .mkString("", "\n", "\n")
+  IO.write(readmeFile, newReadme)
+  val git = new sbtrelease.Git(extracted get baseDirectory)
+  git.add(readme) ! state.log
+  git.commit(message = "update " + readme, sign = false) ! state.log
+  "git diff HEAD^" ! state.log
+  state
+}
+
+lazy val updateReadmeProcess: ReleaseStep = updateReadmeTask
+
+import ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  updateReadmeProcess,
+  tagRelease,
+  ReleaseStep(action = Command.process("publishSigned", _)),
+  setNextVersion,
+  commitNextVersion,
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  updateReadmeProcess,
+  pushChanges
 )
 
 // build.sbt shamelessly inspired by https://github.com/fthomas/refined/blob/master/build.sbt

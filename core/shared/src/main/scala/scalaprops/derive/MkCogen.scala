@@ -1,7 +1,5 @@
-package org.scalacheck
+package scalaprops
 package derive
-
-import org.scalacheck.rng.Seed
 
 import shapeless._
 
@@ -15,6 +13,7 @@ import shapeless._
  * or look up for an implicit `MkCogen[T]`.
  */
 trait MkCogen[T] {
+
   /** `Cogen[T]` instance built by this `MkCogen[T]` */
   def cogen: Cogen[T]
 }
@@ -27,22 +26,17 @@ object MkCogen {
       def cogen = cogen0
     }
 
-  implicit def genericProduct[P, L <: HList]
-   (implicit
-     gen: Generic.Aux[P, L],
-     cogen: Lazy[MkHListCogen[L]]
-   ): MkCogen[P] =
+  implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
+                                             cogen: Lazy[MkHListCogen[L]]): MkCogen[P] =
     instance(cogen.value.cogen.contramap(gen.to))
 
-  implicit def genericCoproduct[S, C <: Coproduct]
-   (implicit
-     gen: Generic.Aux[S, C],
-     cogen: Lazy[MkCoproductCogen[C]]
-   ): MkCogen[S] =
+  implicit def genericCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
+                                                   cogen: Lazy[MkCoproductCogen[C]]): MkCogen[S] =
     instance(cogen.value.cogen.contramap(gen.to))
 }
 
 trait MkHListCogen[L <: HList] {
+
   /** `Cogen[T]` instance built by this `MkCogen[T]` */
   def cogen: Cogen[L]
 }
@@ -58,19 +52,20 @@ object MkHListCogen {
   implicit lazy val hnil: MkHListCogen[HNil] =
     instance(Cogen.cogenUnit.contramap(_ => ()))
 
-  implicit def hcons[H, T <: HList]
-   (implicit
-     headCogen: Strict[Cogen[H]],
-     tailCogen: MkHListCogen[T]
-   ): MkHListCogen[H :: T] =
+  implicit def hcons[H, T <: HList](implicit headCogen: Strict[Cogen[H]],
+                                    tailCogen: MkHListCogen[T]): MkHListCogen[H :: T] =
     instance(
-      Cogen({case (seed, h :: t) =>
-        tailCogen.cogen.perturb(headCogen.value.perturb(seed, h), t)
-      }: (Seed, H :: T) => Seed)
+      scalaz
+        .Divide[Cogen]
+        .deriving2[H, T, H :: T](z => (z.head, z.tail))(
+          headCogen.value,
+          tailCogen.cogen
+        )
     )
 }
 
 trait MkCoproductCogen[C <: Coproduct] {
+
   /** `Cogen[T]` instance built by this `MkCogen[T]` */
   def cogen: Cogen[C]
 }
@@ -86,17 +81,16 @@ object MkCoproductCogen {
   implicit lazy val cnil: MkCoproductCogen[CNil] =
     instance(Cogen.cogenUnit.contramap(_ => ()))
 
-  implicit def ccons[H, T <: Coproduct]
-   (implicit
-     headCogen: Strict[Cogen[H]],
-     tailCogen: MkCoproductCogen[T]
-   ): MkCoproductCogen[H :+: T] =
+  implicit def ccons[H, T <: Coproduct](implicit headCogen: Strict[Cogen[H]],
+                                        tailCogen: MkCoproductCogen[T]): MkCoproductCogen[H :+: T] =
     instance(
-      Cogen({
-        case (seed, Inl(h)) =>
-          headCogen.value.perturb(seed, h)
-        case (seed, Inr(t)) =>
-          tailCogen.cogen.perturb(seed.next, t)
-      }: (Seed, H :+: T) => Seed)
+      new Cogen[H :+: T] {
+        def cogen[B](a: H :+: T, g: CogenState[B]): CogenState[B] = a match {
+          case Inl(h) =>
+            headCogen.value.cogen(h, g)
+          case Inr(t) =>
+            tailCogen.cogen.cogen(t, g)
+        }
+      }
     )
 }

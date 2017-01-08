@@ -1,8 +1,8 @@
-package org.scalacheck
+package scalaprops
 
-import org.scalacheck.derive.Recursive
+import scalaprops.derive.Recursive
 
-import shapeless.{ Lazy => _, _ }
+import shapeless.{Lazy => _, _}
 import shapeless.record._
 import shapeless.union._
 
@@ -18,7 +18,7 @@ object TestsDefinitions {
 
   sealed trait Base
   case class BaseIS(i: Int, s: String) extends Base
-  case class BaseDB(d: Double, b: Boolean) extends Base
+  case class BaseDB(d: Long, b: Boolean) extends Base
   case class BaseLast(c: Simple) extends Base
 
   case class CCWithSingleton(i: Int, s: Witness.`"aa"`.T)
@@ -32,7 +32,7 @@ object TestsDefinitions {
   object T1 {
     sealed abstract class Tree
     object Tree {
-      implicit val recursive = Recursive[Tree](Leaf)
+      implicit val recursive: Recursive[Tree] = Recursive[Tree](Gen.value(Leaf))
     }
     final case class Node(left: Tree, right: Tree, v: Int) extends Tree
     case object Leaf extends Tree
@@ -41,7 +41,7 @@ object TestsDefinitions {
   object T2 {
     sealed abstract class Tree
     object Tree {
-      implicit val recursive = Recursive[Tree](Leaf)
+      implicit val recursive: Recursive[Tree] = Recursive[Tree](Gen.value(Leaf))
     }
     case class Node(left: Tree, right: Tree, v: Int) extends Tree
     case object Leaf extends Tree
@@ -58,7 +58,7 @@ object TestsDefinitions {
   sealed case class B(i: Int, s: String) extends A
   case object C extends A
   sealed trait D extends A
-  final case class E(a: Double, b: Option[Float]) extends D
+  final case class E(a: Long, b: Option[Int]) extends D
   case object F extends D
   sealed abstract class Foo extends D
   case object Baz extends Foo
@@ -72,16 +72,15 @@ object TestsDefinitions {
   type C0 = Int :+: String :+: CNil
   type Un = Union.`'i -> Int, 's -> String`.T
 
-
   object NoTCDefinitions {
-    trait NoArbitraryType
-    case class ShouldHaveNoArb(n: NoArbitraryType, i: Int)
-    case class ShouldHaveNoArbEither(s: String, i: Int, n: NoArbitraryType)
+    trait NoGenitraryType
+    case class ShouldHaveNoGen(n: NoGenitraryType, i: Int)
+    case class ShouldHaveNoGenEither(s: String, i: Int, n: NoGenitraryType)
 
-    sealed trait BaseNoArb
-    case class BaseNoArbIS(i: Int, s: String) extends BaseNoArb
-    case class BaseNoArbDB(d: Double, b: Boolean) extends BaseNoArb
-    case class BaseNoArbN(n: NoArbitraryType) extends BaseNoArb
+    sealed trait BaseNoGen
+    case class BaseNoGenIS(i: Int, s: String) extends BaseNoGen
+    case class BaseNoGenDB(d: Long, b: Boolean) extends BaseNoGen
+    case class BaseNoGenN(n: NoGenitraryType) extends BaseNoGen
   }
 
 }

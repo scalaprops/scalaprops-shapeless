@@ -1,22 +1,18 @@
 language: scala
 scala:
-- 2.10.6
-- 2.11.8
 - 2.12.1
+- 2.11.8
 jdk:
 - oraclejdk8
-script: sbt -batch ++${TRAVIS_SCALA_VERSION} test:compile testJVM/test mimaReportBinaryIssues $(if [[ "${TRAVIS_PULL_REQUEST}" ==
-  "false" && "${TRAVIS_BRANCH}" == "master" ]]; then echo "publish"; fi)
+script: sbt -batch ++${TRAVIS_SCALA_VERSION} $(if [[ "${TRAVIS_SCALA_VERSION}" ==
+  "2.11.8" ]]; then echo "scalafmtTest test:scalafmtTest"; fi) test:compile testJVM/test testJS/test
+  $(if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "${TRAVIS_BRANCH}" == "master" ]];
+  then echo "publish"; fi)
 sudo: false
 cache:
   directories:
-  - $HOME/.coursier
-  - $HOME/.ivy2/cache
-  - $HOME/.sbt
+  - "$HOME/.ivy2/cache"
 env:
   global:
-  - secure: Pu7MuoqV27IULy/jCC4XBSTApLgeW02bf/g5/3/dNiwHllc3JPhzvMpuonJajlExx9+dkdxZSA4d9HmqGvZIonoa2Z292FFLVWIQOATjzWVuZ9ZFH4l7HsDiK/SPfgh9fYKF40aEw2bmIACYu5M2MOGilk4bsLl92ff5T/tr+uc=
-  - secure: K8wTOFoZ1KSlD1RnR5BhBHgE4nrLZQnX6w99GS1+kQIqRO0PG9DP5ZMHcFz3MJBnxOCs0DBA+a41SHa8TXWIY0pzXT+cY6e3gzcU0+1VCpPtU1BJ3qH+PdW5Cl0c+Nl3mQQoRWi6iDdxVV/3DhpIujsoY/boZ4aMyBUqQEvJh8s=
-branches:
-  only:
-  - master
+  - secure: pDB/+p682I6+fDIvvyv1Ro4Xvt+t+/q/U3LG/v2cw4A3FzwY2oFJiRAdSOUd5wC869c+vjGxWjJBXy/WiFgP1lcVVuqa0a98umuEbdk3E2h8PV/zrCkj+lG9QBeybS+X3eaNSvU8naR1h3hIotRw67+wLJwlm7wXoWmTHTq5ECHpBZBlfBd2yOh2tWlmKt+0fmOgIARLXV8sPnQ7/k3sVh5og8a5BqOLrf5z5TtI/k9e9859SkVMnVSnHAuitRzghnolvP+2D3rJQjZ1ITqjFcZR36/xaB+SYkcFapgoGPdKHqT0viMqYhosWpk/lZuEHbB4/tKp2OY5slnbCjPbkhnh5SU2ao4iXpGQez+FYOf4Nz/Rrmc6qw6aT8+gk8Ds9CSnU9t3SFIe7plMe0aSOc3AVJbXIDhamhJ0AsGHlqo23BItegTlXjW7TcqMHzwmxGK1dJl0+BBws00EcXnk9XOz47qzJbc1pKzRKeYwU2nHTM6bw3HI2lXJT8tSNg8Nif453QXEyP1dAHrBL0QUPSBToZdOQKyYAjkqCZ76FZW3FRf5mBWUGbGeSk1Af9uinY9/hK9ohZg2LEyeZl6iA+mkXAVT8jnGkhb4HnonZKbEbPyKNHbTwxuPgSM4nfc4MnanEO/B/wJUzWwNmg++QEAqLKNvVnMyG1qapy52FlE=
+  - secure: EVZHMWLasIlFrTbApr/7LiYHS7VCyHi+u1bZUV8DXvV+Bq6WxDX1W2sIBjGi660qUD5yrOK5hfIYj0YV0T+kiLf1SQqtTWDF3eKh2OXTK5Cr7qJmDkRWRVMXlFmWhz46cfdTHjEypDXm3PaAX5F07SHPYFxZ7TrUMPvGohj+5OZ5Jwd7sInHg0b0H6t5U47fncFv69k6xGBgk4ID52EIjQ6cMpel92GLRl4K5jc0+aWbPBfnwg2JjIgJtk+lXSYHFOHvYl9VBljCEan5XNRAuyOhwfwjHjIhOlR4T1zz/T68kSx/mmBvVga+GJ2regAd+Ru8eSgJ0eM0x6gRcWfSPDiujKS8fBwqhvSG3Sa7fEQmdfy/GCJqd+2sFBH5RiCxdS9MEFwjC8GxEejoiPY9rcq9m1F4yu68zq0UG/O4iXHOdYeMM4mMiDgyBzAskInuwc7GNSb8LCR7f9lKJXWsYY4ZZEMRfGt7SqCqxx5/g7YVaycksPA59lXA16XhfKrlD+H/pGgy7u0Zy3mIKFJ9sb4XvlZwky3nUKcJ3zDbYEIY/cCQkkLNNIojJyTJx4HGK96pyX7ua5sVuknJ4MAtLPqxf12mASixxxR3sjAnzRkRHLUiQN+wPoe/vK8DQMofPZDh8tpqTbtB0kaHEf2YpUK1o4UZSVvf+Fn+2QDRsEw=
