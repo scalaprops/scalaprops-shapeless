@@ -36,7 +36,7 @@ object PropertyTests extends Scalaprops {
   val recursiveADT1 = Property.forAll { (f: Int => T1.Tree) =>
     f(0)
     true
-  }.toProperties((), Param.minSuccessful(10000))
+  }
 
   val recursiveADT2 = {
     Property.forAll { (f: Int => T1NoRecursiveTC.Tree) =>
