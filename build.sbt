@@ -141,7 +141,7 @@ lazy val updateReadmeTask = { state: State =>
       val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
       if (line.startsWith("libraryDependencies") && matchReleaseOrSnapshot) {
         val i = modules.map("\"" + _ + "\"").indexWhere(line.contains)
-        s"""libraryDependencies += "$org" %% "${modules(i)}" % "$v" % "test""""
+        s"""libraryDependencies += "$org" %% "${modules(i)}" % "$v""""
       } else line
     }
     .mkString("", "\n", "\n")
