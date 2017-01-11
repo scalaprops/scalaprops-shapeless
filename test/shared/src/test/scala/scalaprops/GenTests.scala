@@ -140,7 +140,7 @@ object GenTests extends Scalaprops {
         MkGen.genericProduct(
           Generic[BaseDB],
           MkHListGen.hcons(
-            Gen[Long],
+            Gen[Byte],
             MkHListGen.hcons(
               Gen.genBoolean,
               MkHListGen.hnil,
@@ -347,7 +347,7 @@ object GenTests extends Scalaprops {
     MkGen.genericProduct(
       Generic[E],
       MkHListGen.hcons(
-        Gen[Long],
+        Gen[Byte],
         MkHListGen.hcons(
           Gen.option(Gen[Int]),
           MkHListGen.hnil,
