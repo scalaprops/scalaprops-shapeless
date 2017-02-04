@@ -58,7 +58,7 @@ lazy val commonSettings = Seq(
     resolvers += Opts.resolver.sonatypeReleases,
     commands += Command.command("updateReadme")(updateReadmeTask),
     organization := "com.github.scalaprops",
-    scalapropsVersion := "0.3.6"
+    scalapropsVersion := "0.4.0"
   ) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
 
 lazy val unusedWarnings = Seq("-Ywarn-unused", "-Ywarn-unused-import")
