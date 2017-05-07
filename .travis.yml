@@ -5,7 +5,7 @@ scala:
 jdk:
 - oraclejdk8
 script: sbt -batch ++${TRAVIS_SCALA_VERSION} $(if [[ "${TRAVIS_SCALA_VERSION}" ==
-  "2.11.11" ]]; then echo "scalafmtTest test:scalafmtTest"; fi) test:compile testJVM/test testJS/test
+  "2.11.11" ]]; then echo scalafmtTest ; fi) test:compile testJVM/test testJS/test
   $(if [[ "${TRAVIS_PULL_REQUEST}" == "false" && "${TRAVIS_BRANCH}" == "master" && "${TRAVIS_REPO_SLUG}" == "scalaprops/scalaprops-shapeless" ]];
   then echo "publish"; fi)
 sudo: false

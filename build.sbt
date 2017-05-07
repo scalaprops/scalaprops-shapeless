@@ -1,5 +1,3 @@
-scalafmtConfig in ThisBuild := Some((baseDirectory in LocalRootProject).value / ".scalafmt.conf")
-
 lazy val tagName = Def.setting {
   s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
 }
@@ -53,18 +51,18 @@ lazy val testJS = test.js
 lazy val coreName = "scalaprops-shapeless"
 
 lazy val commonSettings = Seq(
-    releaseTagName := tagName.value,
-    releaseCrossBuild := true,
-    resolvers += Opts.resolver.sonatypeReleases,
-    commands += Command.command("updateReadme")(updateReadmeTask),
-    organization := "com.github.scalaprops",
-    scalapropsVersion := "0.4.2"
-  ) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
+  releaseTagName := tagName.value,
+  releaseCrossBuild := true,
+  resolvers += Opts.resolver.sonatypeReleases,
+  commands += Command.command("updateReadme")(updateReadmeTask),
+  organization := "com.github.scalaprops",
+  scalapropsVersion := "0.4.2"
+) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
 
 lazy val unusedWarnings = Seq("-Ywarn-unused", "-Ywarn-unused-import")
 
 lazy val compileSettings = Seq(
-    scalacOptions in (Compile, doc) ++= {
+  scalacOptions in (Compile, doc) ++= {
     val tag = tagOrHash.value
     Seq(
       "-sourcepath",
@@ -73,18 +71,18 @@ lazy val compileSettings = Seq(
       s"https://github.com/scalaprops/scalaprops-shapeless/tree/${tag}€{FILE_PATH}.scala"
     )
   },
-    scalacOptions ++= unusedWarnings,
-    scalacOptions ++= Seq(
-      "-deprecation",
-      "-unchecked",
-      "-Xlint",
-      "-Xfuture",
-      "-language:existentials",
-      "-language:higherKinds",
-      "-language:implicitConversions",
-      "-Yno-adapted-args"
-    )
-  ) ++ Seq(Compile, Test).flatMap(c => scalacOptions in (c, console) --= unusedWarnings)
+  scalacOptions ++= unusedWarnings,
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-unchecked",
+    "-Xlint",
+    "-Xfuture",
+    "-language:existentials",
+    "-language:higherKinds",
+    "-language:implicitConversions",
+    "-Yno-adapted-args"
+  )
+) ++ Seq(Compile, Test).flatMap(c => scalacOptions in (c, console) --= unusedWarnings)
 
 lazy val publishSettings = Seq(
   homepage := Some(url("https://github.com/scalaprops/scalaprops-shapeless")),
