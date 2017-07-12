@@ -18,6 +18,16 @@ addons:
   apt:
     packages:
     - oracle-java8-installer
+matrix:
+  include:
+  - scala: 2.11.11
+    dist: trusty
+    sudo: required
+    env: NATIVE=1
+    before_install:
+    - curl https://raw.githubusercontent.com/scala-native/scala-native/v0.3.1/bin/travis_setup.sh | bash -x
+    script:
+    - sbt ++${TRAVIS_SCALA_VERSION} testNative/test
 env:
   global:
   - secure: pDB/+p682I6+fDIvvyv1Ro4Xvt+t+/q/U3LG/v2cw4A3FzwY2oFJiRAdSOUd5wC869c+vjGxWjJBXy/WiFgP1lcVVuqa0a98umuEbdk3E2h8PV/zrCkj+lG9QBeybS+X3eaNSvU8naR1h3hIotRw67+wLJwlm7wXoWmTHTq5ECHpBZBlfBd2yOh2tWlmKt+0fmOgIARLXV8sPnQ7/k3sVh5og8a5BqOLrf5z5TtI/k9e9859SkVMnVSnHAuitRzghnolvP+2D3rJQjZ1ITqjFcZR36/xaB+SYkcFapgoGPdKHqT0viMqYhosWpk/lZuEHbB4/tKp2OY5slnbCjPbkhnh5SU2ao4iXpGQez+FYOf4Nz/Rrmc6qw6aT8+gk8Ds9CSnU9t3SFIe7plMe0aSOc3AVJbXIDhamhJ0AsGHlqo23BItegTlXjW7TcqMHzwmxGK1dJl0+BBws00EcXnk9XOz47qzJbc1pKzRKeYwU2nHTM6bw3HI2lXJT8tSNg8Nif453QXEyP1dAHrBL0QUPSBToZdOQKyYAjkqCZ76FZW3FRf5mBWUGbGeSk1Af9uinY9/hK9ohZg2LEyeZl6iA+mkXAVT8jnGkhb4HnonZKbEbPyKNHbTwxuPgSM4nfc4MnanEO/B/wJUzWwNmg++QEAqLKNvVnMyG1qapy52FlE=

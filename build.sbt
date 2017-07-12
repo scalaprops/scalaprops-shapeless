@@ -1,3 +1,5 @@
+import sbtcrossproject.CrossPlugin.autoImport.crossProject
+
 lazy val tagName = Def.setting {
   s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
 }
@@ -12,15 +14,20 @@ lazy val `scalaprops-shapeless` = project
   .settings(commonSettings)
   .settings(noPublishSettings)
 
-lazy val core = crossProject
+lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
   .settings(
     name := coreName,
     moduleName := coreName,
     libraryDependencies ++= Seq(
-      "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value,
-      "com.chuusai" %%% "shapeless" % "2.3.2"
+      "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value
     )
+  )
+  .platformsSettings(JVMPlatform, JSPlatform)(
+    libraryDependencies += "com.chuusai" %%% "shapeless" % "2.3.2"
+  )
+  .nativeSettings(
+    libraryDependencies += "com.github.alexarchambault" %%% "shapeless" % "2.3.3-pre-1"
   )
   .jsSettings(
     scalacOptions += {
@@ -33,8 +40,9 @@ lazy val core = crossProject
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
+lazy val coreNative = core.native
 
-lazy val test = crossProject
+lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .dependsOn(core)
   .settings(commonSettings)
   .settings(
@@ -44,9 +52,13 @@ lazy val test = crossProject
   .jsSettings(
     scalaJSStage in Test := FastOptStage
   )
+  .nativeSettings(
+    scalapropsNativeSettings
+  )
 
 lazy val testJVM = test.jvm
 lazy val testJS = test.js
+lazy val testNative = test.native
 
 lazy val coreName = "scalaprops-shapeless"
 
@@ -155,11 +167,15 @@ lazy val updateReadmeProcess: ReleaseStep = updateReadmeTask
 
 import ReleaseTransformations._
 
+val SetScala211 = releaseStepCommand("++ 2.11.11")
+
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
   runClean,
   runTest,
+  SetScala211,
+  releaseStepCommand("testNative/test"),
   setReleaseVersion,
   commitReleaseVersion,
   updateReadmeProcess,
@@ -171,6 +187,8 @@ releaseProcess := Seq[ReleaseStep](
     },
     enableCrossBuild = true
   ),
+  SetScala211,
+  releaseStepCommand("coreNative/publishSigned"),
   setNextVersion,
   commitNextVersion,
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
