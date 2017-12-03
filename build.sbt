@@ -63,6 +63,12 @@ lazy val testNative = test.native
 lazy val coreName = "scalaprops-shapeless"
 
 lazy val commonSettings = Seq(
+  publishTo := Some(
+    if (isSnapshot.value)
+      Opts.resolver.sonatypeSnapshots
+    else
+      Opts.resolver.sonatypeStaging
+  ),
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
   resolvers += Opts.resolver.sonatypeReleases,
