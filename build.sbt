@@ -4,15 +4,12 @@ lazy val tagName = Def.setting {
   s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
 }
 lazy val tagOrHash = Def.setting {
-  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lines_!.head
+  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
   else tagName.value
 }
 
-lazy val `scalaprops-shapeless` = project
-  .in(file("."))
-  .aggregate(coreJVM, coreJS, testJVM, testJS)
-  .settings(commonSettings)
-  .settings(noPublishSettings)
+lazy val `scalaprops-shapeless` =
+  project.in(file(".")).aggregate(coreJVM, coreJS, testJVM, testJS).settings(commonSettings).settings(noPublishSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
@@ -166,8 +163,8 @@ lazy val updateReadmeTask = { state: State =>
   IO.write(readmeFile, newReadme)
   val git = new sbtrelease.Git(extracted get baseDirectory)
   git.add(readme) ! state.log
-  git.commit(message = "update " + readme, sign = false) ! state.log
-  "git diff HEAD^" ! state.log
+  git.commit(message = "update " + readme, sign = false, signOff = false) ! state.log
+  sys.process.Process("git diff HEAD^") ! state.log
   state
 }
 
