@@ -197,7 +197,7 @@ releaseProcess := Seq[ReleaseStep](
   releaseStepCommand("coreNative/publishSigned"),
   setNextVersion,
   commitNextVersion,
-  ReleaseStep(action = Command.process("sonatypeReleaseAll", _)),
+  releaseStepCommand("sonatypeReleaseAll"),
   updateReadmeProcess,
   pushChanges
 )
