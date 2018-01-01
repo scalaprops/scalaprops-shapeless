@@ -168,7 +168,7 @@ lazy val updateReadmeProcess: ReleaseStep = updateReadmeTask
 
 import ReleaseTransformations._
 
-val SetScala211 = releaseStepCommand("++ 2.11.11")
+val SetScala211 = releaseStepCommand("++ 2.11.12")
 
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
