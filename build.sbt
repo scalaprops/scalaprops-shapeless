@@ -175,8 +175,6 @@ releaseProcess := Seq[ReleaseStep](
   inquireVersions,
   runClean,
   runTest,
-  SetScala211,
-  releaseStepCommand("testNative/test"),
   setReleaseVersion,
   commitReleaseVersion,
   updateReadmeProcess,
