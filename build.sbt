@@ -130,10 +130,10 @@ lazy val publishSettings = Seq(
 )
 
 lazy val noPublishSettings = Seq(
-  publish := (),
-  publishLocal := (),
-  PgpKeys.publishSigned := (),
-  PgpKeys.publishLocalSigned := (),
+  publish := {},
+  publishLocal := {},
+  PgpKeys.publishSigned := {},
+  PgpKeys.publishLocalSigned := {},
   publishArtifact := false
 )
 
