@@ -2,7 +2,7 @@ language: scala
 scala:
 - 2.12.4
 - 2.11.12
-- 2.13.0-M2
+- 2.13.0-M3
 jdk:
 - oraclejdk8
 script: sbt -batch ++${TRAVIS_SCALA_VERSION} $(if [[ "${TRAVIS_SCALA_VERSION}" ==
