@@ -85,6 +85,14 @@ lazy val compileSettings = Seq(
     )
   },
   scalacOptions ++= unusedWarnings,
+  scalacOptions ++= {
+    CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, v)) if v <= 12 =>
+        Seq("-Yno-adapted-args")
+      case _ =>
+        Nil
+    }
+  },
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
@@ -92,8 +100,7 @@ lazy val compileSettings = Seq(
     "-Xfuture",
     "-language:existentials",
     "-language:higherKinds",
-    "-language:implicitConversions",
-    "-Yno-adapted-args"
+    "-language:implicitConversions"
   )
 ) ++ Seq(Compile, Test).flatMap(c => scalacOptions in (c, console) --= unusedWarnings)
 
