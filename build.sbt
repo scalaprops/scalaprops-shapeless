@@ -72,7 +72,7 @@ lazy val commonSettings = Seq(
   scalapropsVersion := "0.5.5"
 ) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
 
-lazy val unusedWarnings = Seq("-Ywarn-unused", "-Ywarn-unused-import")
+lazy val unusedWarnings = Seq("-Ywarn-unused")
 
 lazy val compileSettings = Seq(
   scalacOptions in (Compile, doc) ++= {
