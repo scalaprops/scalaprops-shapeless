@@ -15,10 +15,6 @@ cache:
   directories:
   - "$HOME/.ivy2/cache"
   - "$HOME/.sbt/launchers"
-addons:
-  apt:
-    packages:
-    - oracle-java8-installer
 matrix:
   include:
   - scala: 2.11.12
