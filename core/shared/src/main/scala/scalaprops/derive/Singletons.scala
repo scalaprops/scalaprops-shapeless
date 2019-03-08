@@ -38,11 +38,12 @@ object Singletons extends LowPrioritySingletons {
   def empty[T]: Singletons[T] = instance(Seq.empty)
 
   implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
-                                             reprSingletons: Lazy[HListSingletons[L]]): Singletons[P] =
+                                             reprSingletons: shapeless.Lazy[HListSingletons[L]]): Singletons[P] =
     instance(reprSingletons.value().map(gen.from))
 
-  implicit def genericCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
-                                                   reprSingletons: Lazy[CoproductSingletons[C]]): Singletons[S] =
+  implicit def genericCoproduct[S, C <: Coproduct](
+    implicit gen: Generic.Aux[S, C],
+    reprSingletons: shapeless.Lazy[CoproductSingletons[C]]): Singletons[S] =
     instance(reprSingletons.value().map(gen.from))
 
   implicit def hlist[L <: HList](implicit underlying: HListSingletons[L]): Singletons[L] =

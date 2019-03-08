@@ -14,7 +14,7 @@ object CogenTests extends Scalaprops {
   import Shapeless._
 
   private[this] implicit val genString: Gen[String] =
-    scalaz.Tag.unsubst(Gen.genAsciiString)
+    Gen.asciiString
 
   lazy val expectedIntStringBoolCogen =
     expectedIntStringBoolMkHListCogen.cogen
@@ -90,7 +90,7 @@ object CogenTests extends Scalaprops {
       MkCogen
         .genericProduct(
           Generic[Empty.type],
-          Lazy(MkHListCogen.hnil)
+          shapeless.Lazy(MkHListCogen.hnil)
         )
         .cogen
 
@@ -111,7 +111,7 @@ object CogenTests extends Scalaprops {
       MkCogen
         .genericProduct(
           Generic[EmptyCC],
-          Lazy(MkHListCogen.hnil)
+          shapeless.Lazy(MkHListCogen.hnil)
         )
         .cogen
 

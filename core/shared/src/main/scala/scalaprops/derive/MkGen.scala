@@ -3,8 +3,6 @@ package derive
 
 import shapeless._
 
-import scalaz.Need
-
 /**
  * Derives `Gen[T]` instances for `T` an `HList`, a `Coproduct`,
  * a case class or an ADT (or more generally, a type represented
@@ -23,7 +21,7 @@ trait MkGen[T] {
 abstract class MkGenLowPriority {
 
   implicit def genericNonRecursiveCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
-                                                               mkGen: Lazy[MkCoproductGen[C]]): MkGen[S] =
+                                                               mkGen: shapeless.Lazy[MkCoproductGen[C]]): MkGen[S] =
     MkGen.instance(
       Gen.delay(mkGen.value.gen).map(gen.from)
     )
@@ -37,14 +35,16 @@ object MkGen extends MkGenLowPriority {
       def gen = g
     }
 
-  implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L], mkGen: Lazy[MkHListGen[L]]): MkGen[P] =
+  implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
+                                             mkGen: shapeless.Lazy[MkHListGen[L]]): MkGen[P] =
     instance(
       Gen.delay(mkGen.value.gen).map(gen.from)
     )
 
-  implicit def genericRecursiveCoproduct[S, C <: Coproduct](implicit rec: Recursive[S],
-                                                            gen: Generic.Aux[S, C],
-                                                            mkGen: Lazy[MkRecursiveCoproductGen[C]]): MkGen[S] =
+  implicit def genericRecursiveCoproduct[S, C <: Coproduct](
+    implicit rec: Recursive[S],
+    gen: Generic.Aux[S, C],
+    mkGen: shapeless.Lazy[MkRecursiveCoproductGen[C]]): MkGen[S] =
     instance(
       Gen.delay(mkGen.value.gen).flatMap {
         _.valueOpt match {
@@ -137,8 +137,8 @@ object MkRecursiveCoproductGen {
         case size =>
           val nextSize = size - 1
           Gen.lazyFrequency(
-            1 -> Need(headGen.value.resize(nextSize).map(h => Recursive.Value(Some[H :+: T](Inl(h))))),
-            n() -> Need(Gen.delay(tailGen.gen).resize(nextSize).map(_.map(Inr(_): (H :+: T))))
+            1 -> scalaprops.Lazy(headGen.value.resize(nextSize).map(h => Recursive.Value(Some[H :+: T](Inl(h))))),
+            n() -> scalaprops.Lazy(Gen.delay(tailGen.gen).resize(nextSize).map(_.map(Inr(_): (H :+: T))))
           )
       }
     )
@@ -173,8 +173,8 @@ object MkCoproductGen {
          */
         val nextSize = (size - 1) max 0
         Gen.lazyFrequency(
-          1 -> Need(headGen.map(_.map(Inl(_): (H :+: T)).resize(nextSize)).value),
-          n() -> Need(Gen.delay(tailGen.gen).map(Inr(_): (H :+: T)).resize(nextSize))
+          1 -> scalaprops.Lazy(headGen.map(_.map(Inl(_): (H :+: T)).resize(nextSize)).value),
+          n() -> scalaprops.Lazy(Gen.delay(tailGen.gen).map(Inr(_): (H :+: T)).resize(nextSize))
         )
       }
     )

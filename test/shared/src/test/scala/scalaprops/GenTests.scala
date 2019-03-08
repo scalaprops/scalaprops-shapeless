@@ -7,7 +7,6 @@ import shapeless.labelled.FieldType
 import shapeless.record._
 import shapeless.union._
 import shapeless.test.illTyped
-import scalaz.std.string._
 
 import Util._
 
@@ -16,7 +15,7 @@ object GenTests extends Scalaprops {
   import Shapeless._
 
   private[this] implicit val genString: Gen[String] =
-    scalaz.Tag.unsubst(Gen.genAsciiString)
+    Gen.asciiString
 
   lazy val expectedSimpleGen: Gen[Simple] =
     MkGen
@@ -279,7 +278,7 @@ object GenTests extends Scalaprops {
           MkGen
             .genericProduct(
               Generic[T1.Leaf.type],
-              Lazy(
+              shapeless.Lazy(
                 MkHListGen.hnil
               )
             )
@@ -494,7 +493,7 @@ object GenTests extends Scalaprops {
       .hcons(
         Gen[Int],
         MkHListGen.hcons(
-          Strict(scalaz.Tag.unsubst(Gen.genAsciiString)),
+          Strict(Gen.asciiString),
           MkHListGen.hnil,
           ops.hlist.Length.hnilLength[HNil],
           ops.nat.ToInt[Nat._0]
@@ -564,7 +563,7 @@ object GenTests extends Scalaprops {
       MkGen
         .genericProduct(
           Generic[Empty.type],
-          Lazy(MkHListGen.hnil)
+          shapeless.Lazy(MkHListGen.hnil)
         )
         .gen
 
@@ -577,7 +576,7 @@ object GenTests extends Scalaprops {
       MkGen
         .genericProduct(
           Generic[EmptyCC],
-          Lazy(MkHListGen.hnil)
+          shapeless.Lazy(MkHListGen.hnil)
         )
         .gen
 
@@ -666,7 +665,7 @@ object GenTests extends Scalaprops {
     }.toProperties("ADT")
   )
 
-  val shapeless = Properties.list(
+  val testShapeless = Properties.list(
     Property.forAll {
       val gen = Gen[L]
       compareGen(expectedLGen, gen)

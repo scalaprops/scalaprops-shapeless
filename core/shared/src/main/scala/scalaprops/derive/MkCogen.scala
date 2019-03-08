@@ -27,11 +27,11 @@ object MkCogen {
     }
 
   implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
-                                             cogen: Lazy[MkHListCogen[L]]): MkCogen[P] =
+                                             cogen: shapeless.Lazy[MkHListCogen[L]]): MkCogen[P] =
     instance(cogen.value.cogen.contramap(gen.to))
 
   implicit def genericCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
-                                                   cogen: Lazy[MkCoproductCogen[C]]): MkCogen[S] =
+                                                   cogen: shapeless.Lazy[MkCoproductCogen[C]]): MkCogen[S] =
     instance(cogen.value.cogen.contramap(gen.to))
 }
 
@@ -55,12 +55,10 @@ object MkHListCogen {
   implicit def hcons[H, T <: HList](implicit headCogen: Strict[Cogen[H]],
                                     tailCogen: MkHListCogen[T]): MkHListCogen[H :: T] =
     instance(
-      scalaz
-        .Divide[Cogen]
-        .deriving2[H, T, H :: T](z => (z.head, z.tail))(
-          headCogen.value,
-          tailCogen.cogen
-        )
+      Cogen.devide(
+        headCogen.value,
+        tailCogen.cogen
+      )(z => (z.head, z.tail))
     )
 }
 

@@ -16,7 +16,7 @@ object ShrinkTests extends Scalaprops {
     Shrink.long.xmap(_.toChar, x => x)
 
   private[this] implicit val genString: Gen[String] =
-    scalaz.Tag.unsubst(Gen.genAsciiString)
+    Gen.asciiString
 
   private[this] implicit val shrinkString =
     Shrink[List[Char]].xmap[String](_.mkString, _.toCharArray.toList)
@@ -66,7 +66,7 @@ object ShrinkTests extends Scalaprops {
     MkShrink
       .genericProduct(
         Generic[Simple],
-        Lazy(
+        shapeless.Lazy(
           expectedIntStringBoolMkHListShrink
         )
       )

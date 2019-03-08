@@ -32,13 +32,13 @@ object MkShrink {
     }
 
   implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
-                                             shrink: Lazy[MkHListShrink[L]]): MkShrink[P] =
+                                             shrink: shapeless.Lazy[MkHListShrink[L]]): MkShrink[P] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
 
   implicit def genericCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
-                                                   shrink: Lazy[MkCoproductShrink[C]]): MkShrink[S] =
+                                                   shrink: shapeless.Lazy[MkCoproductShrink[C]]): MkShrink[S] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
