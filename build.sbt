@@ -111,14 +111,16 @@ lazy val publishSettings = Seq(
       url("https://github.com/scalaprops/scalaprops-shapeless.git"),
       "scm:git:github.com/scalaprops/scalaprops-shapeless.git",
       Some("scm:git:git@github.com:scalaprops/scalaprops-shapeless.git")
-    )),
+    )
+  ),
   developers := List(
     Developer(
       "xuwei-k",
       "Kenji Yoshida",
       "",
       url("https://github.com/xuwei-k")
-    )),
+    )
+  ),
   publishMavenStyle := true,
   pomIncludeRepository := { _ =>
     false

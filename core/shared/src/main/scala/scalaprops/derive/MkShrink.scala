@@ -31,14 +31,18 @@ object MkShrink {
       st(to(u)).map(from)
     }
 
-  implicit def genericProduct[P, L <: HList](implicit gen: Generic.Aux[P, L],
-                                             shrink: shapeless.Lazy[MkHListShrink[L]]): MkShrink[P] =
+  implicit def genericProduct[P, L <: HList](
+    implicit gen: Generic.Aux[P, L],
+    shrink: shapeless.Lazy[MkHListShrink[L]]
+  ): MkShrink[P] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
 
-  implicit def genericCoproduct[S, C <: Coproduct](implicit gen: Generic.Aux[S, C],
-                                                   shrink: shapeless.Lazy[MkCoproductShrink[C]]): MkShrink[S] =
+  implicit def genericCoproduct[S, C <: Coproduct](
+    implicit gen: Generic.Aux[S, C],
+    shrink: shapeless.Lazy[MkCoproductShrink[C]]
+  ): MkShrink[S] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
@@ -61,8 +65,10 @@ object MkHListShrink {
   implicit val hnil: MkHListShrink[HNil] =
     instance(Shrink.empty)
 
-  implicit def hcons[H, T <: HList](implicit headShrink: Strict[Shrink[H]],
-                                    tailShrink: MkHListShrink[T]): MkHListShrink[H :: T] =
+  implicit def hcons[H, T <: HList](
+    implicit headShrink: Strict[Shrink[H]],
+    tailShrink: MkHListShrink[T]
+  ): MkHListShrink[H :: T] =
     instance(
       Shrink.shrink {
         case h :: t =>
@@ -89,10 +95,12 @@ object MkCoproductShrink {
   implicit val cnil: MkCoproductShrink[CNil] =
     instance(Shrink.empty)
 
-  implicit def ccons[H, T <: Coproduct](implicit headShrink: Strict[Shrink[H]],
-                                        tailShrink: MkCoproductShrink[T],
-                                        headSingletons: Strict[Singletons[H]],
-                                        tailSingletons: Strict[Singletons[T]]): MkCoproductShrink[H :+: T] =
+  implicit def ccons[H, T <: Coproduct](
+    implicit headShrink: Strict[Shrink[H]],
+    tailShrink: MkCoproductShrink[T],
+    headSingletons: Strict[Singletons[H]],
+    tailSingletons: Strict[Singletons[T]]
+  ): MkCoproductShrink[H :+: T] =
     instance(
       Shrink.shrink {
         case Inl(h) =>
