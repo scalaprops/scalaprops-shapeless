@@ -1,6 +1,6 @@
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.1.2")
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.26")
-addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.1.3")
+addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
 addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.3.0")
 addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "2.4")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11")
