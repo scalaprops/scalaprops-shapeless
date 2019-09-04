@@ -15,13 +15,13 @@ trait SingletonInstances {
    *
    * The generated `Cogen[T]` behaves like `Cogen[Unit]`, as like
    * `Unit`, singleton types only have one instance.
+   *
+   * @note
+   * Extra contramap, that inserts a `next` call on the returned seeds,
+   * so that case objects are returned the same Cogen here and when derived through Generic.
    */
   implicit def cogenSingletonType[S](implicit w: Witness.Aux[S]): Cogen[S] =
-    Cogen.cogenUnit
-    // Extra contramap, that inserts a `next` call on the returned seeds,
-    // so that case objects are returned the same Cogen here and when derived through Generic.
-      .contramap[Unit](identity)
-      .contramap[S](_ => ())
+    Cogen.cogenUnit.contramap[Unit](identity).contramap[S](_ => ())
 }
 
 trait FieldTypeInstances {
