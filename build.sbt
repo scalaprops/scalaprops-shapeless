@@ -63,7 +63,6 @@ lazy val commonSettings = Seq(
   ),
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
-  resolvers += Opts.resolver.sonatypeReleases,
   commands += Command.command("updateReadme")(updateReadmeTask),
   organization := "com.github.scalaprops",
   scalapropsVersion := "0.6.1"
