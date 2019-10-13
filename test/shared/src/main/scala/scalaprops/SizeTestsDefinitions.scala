@@ -1,7 +1,7 @@
 package scalaprops
 
 object SizeTestsDefinitions {
-  // see https://github.com/rickynils/scalacheck/issues/305
+  // see https://github.com/typelevel/scalacheck/issues/305
   sealed trait Tree {
     def depth: Int = {
 
