@@ -4,7 +4,6 @@ import Shapeless._
 import scalaprops.TestsDefinitions.{T1, T1NoRecursiveTC}
 
 object PropertyTests extends Scalaprops {
-
   val oneElementAdt = {
     sealed trait Foo
     case object Bar extends Foo
@@ -44,5 +43,4 @@ object PropertyTests extends Scalaprops {
       true
     }
   }.ignore("TODO stack overflow")
-
 }

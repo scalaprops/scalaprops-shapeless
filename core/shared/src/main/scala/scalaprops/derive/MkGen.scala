@@ -13,13 +13,11 @@ import shapeless._
  * or look up for an implicit `MkGen[T]`.
  */
 trait MkGen[T] {
-
   /** `Gen[T]` instance built by this `MkGen[T]` */
   def gen: Gen[T]
 }
 
 abstract class MkGenLowPriority {
-
   implicit def genericNonRecursiveCoproduct[S, C <: Coproduct](
     implicit gen: Generic.Aux[S, C],
     mkGen: shapeless.Lazy[MkCoproductGen[C]]
@@ -117,7 +115,6 @@ object MkHListGen {
 }
 
 trait MkRecursiveCoproductGen[C <: Coproduct] {
-
   /** `Gen[T]` instance built by this `MkRecursiveCoproductGen[T]` */
   def gen: Gen[Recursive.Value[C]]
 }

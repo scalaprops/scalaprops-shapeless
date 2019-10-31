@@ -4,7 +4,6 @@ object SizeTestsDefinitions {
   // see https://github.com/typelevel/scalacheck/issues/305
   sealed trait Tree {
     def depth: Int = {
-
       var max = 0
       val m = new scala.collection.mutable.Queue[(Int, Branch)]
 

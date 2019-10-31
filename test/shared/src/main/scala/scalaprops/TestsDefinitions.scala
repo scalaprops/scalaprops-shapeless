@@ -7,7 +7,6 @@ import shapeless.record._
 import shapeless.union._
 
 object TestsDefinitions {
-
   case class Simple(i: Int, s: String, blah: Boolean)
 
   case object Empty
@@ -82,5 +81,4 @@ object TestsDefinitions {
     case class BaseNoGenDB(d: Byte, b: Boolean) extends BaseNoGen
     case class BaseNoGenN(n: NoGenitraryType) extends BaseNoGen
   }
-
 }
