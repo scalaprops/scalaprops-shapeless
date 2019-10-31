@@ -5,7 +5,6 @@ import shapeless.{Coproduct, HList, LowPriority, Strict, Witness}
 import shapeless.labelled._
 
 trait SingletonInstances {
-
   implicit def genSingletonType[S](implicit w: Witness.Aux[S]): Gen[S] =
     Gen.gen((_, r) => (r, w.value))
 
@@ -25,7 +24,6 @@ trait SingletonInstances {
 }
 
 trait FieldTypeInstances {
-
   implicit def genFieldType[K, H](implicit underlying: Gen[H]): Gen[FieldType[K, H]] =
     underlying.map(field[K](_))
 
@@ -37,7 +35,6 @@ trait FieldTypeInstances {
 }
 
 trait HListInstances {
-
   implicit def hlistGen[L <: HList](implicit gen: MkHListGen[L]): Gen[L] =
     gen.gen
 
@@ -49,7 +46,6 @@ trait HListInstances {
 }
 
 trait CoproductInstances {
-
   implicit def coproductGen[C <: Coproduct](implicit gen: MkCoproductGen[C]): Gen[C] =
     gen.gen
 
@@ -61,7 +57,6 @@ trait CoproductInstances {
 }
 
 trait DerivedInstances {
-
   implicit def derivedGen[T](implicit ev: LowPriority, underlying: Strict[MkGen[T]]): Gen[T] =
     underlying.value.gen
 

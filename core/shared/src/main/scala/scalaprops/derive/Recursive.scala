@@ -3,7 +3,6 @@ package scalaprops.derive
 import scalaprops.Gen
 
 sealed abstract class Recursive[T] {
-
   /**
    * If scalaprops's size parameter prevents generating an arbitrary `T`, generate a value
    * with this `Gen[T]` instead.
@@ -12,7 +11,6 @@ sealed abstract class Recursive[T] {
 }
 
 object Recursive {
-
   /**
    * Flags type `T` as recursive. Resulting value should be marked as implicit.
    *

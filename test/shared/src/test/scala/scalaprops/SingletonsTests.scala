@@ -6,7 +6,6 @@ import scalaprops.Property.forAll
 import Util.validateSingletons
 
 object SingletonsTests extends Scalaprops {
-
   import SingletonsTestsDefinitions._
 
   val hnil = forAll {

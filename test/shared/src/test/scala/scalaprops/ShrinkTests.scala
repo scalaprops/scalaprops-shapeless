@@ -132,5 +132,4 @@ object ShrinkTests extends Scalaprops {
     val shrink = Shrink[Un]
     compareShrink(shrink, expectedUnionShrink)
   }
-
 }

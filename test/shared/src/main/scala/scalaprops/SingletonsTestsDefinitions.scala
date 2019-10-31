@@ -1,7 +1,6 @@
 package scalaprops
 
 object SingletonsTestsDefinitions {
-
   // Running into SI-7046 for Base if these are put directly into SingletonsTests
 
   case object CaseObj
@@ -17,5 +16,4 @@ object SingletonsTestsDefinitions {
   case class BaseMoreNonSingleton(i: Int) extends BaseMore
 
   case class NonSingleton(s: String)
-
 }

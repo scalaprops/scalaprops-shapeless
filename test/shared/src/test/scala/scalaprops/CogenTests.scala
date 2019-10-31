@@ -143,5 +143,4 @@ object CogenTests extends Scalaprops {
     val cogen = Cogen[Un]
     compareCogen(expectedUnionCogen, cogen)
   }
-
 }

@@ -13,7 +13,6 @@ import shapeless._
  * or look up for an implicit `MkShrink[T]`.
  */
 trait MkShrink[T] {
-
   /** `Shrink[T]` instance built by this `MkShrink[T]` */
   def shrink: Shrink[T]
 }
@@ -49,7 +48,6 @@ object MkShrink {
 }
 
 trait MkHListShrink[L <: HList] {
-
   /** `Shrink[T]` instance built by this `MkHListShrink[T]` */
   def shrink: Shrink[L]
 }
@@ -79,7 +77,6 @@ object MkHListShrink {
 }
 
 trait MkCoproductShrink[C <: Coproduct] {
-
   /** `Shrink[T]` instance built by this `MkCoproductShrink[T]` */
   def shrink: Shrink[C]
 }

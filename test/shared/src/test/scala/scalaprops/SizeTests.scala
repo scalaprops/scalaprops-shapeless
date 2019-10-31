@@ -9,7 +9,6 @@ object SizeTests0 {
 }
 
 object SizeTests extends Scalaprops {
-
   import SizeTestsDefinitions._
 
   assert(Leaf.depth == 0)
@@ -34,5 +33,4 @@ object SizeTests extends Scalaprops {
     }
     true
   }
-
 }

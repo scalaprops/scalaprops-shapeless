@@ -13,7 +13,6 @@ import shapeless._
  * or look up for an implicit `MkCogen[T]`.
  */
 trait MkCogen[T] {
-
   /** `Cogen[T]` instance built by this `MkCogen[T]` */
   def cogen: Cogen[T]
 }
@@ -40,7 +39,6 @@ object MkCogen {
 }
 
 trait MkHListCogen[L <: HList] {
-
   /** `Cogen[T]` instance built by this `MkCogen[T]` */
   def cogen: Cogen[L]
 }
@@ -69,7 +67,6 @@ object MkHListCogen {
 }
 
 trait MkCoproductCogen[C <: Coproduct] {
-
   /** `Cogen[T]` instance built by this `MkCogen[T]` */
   def cogen: Cogen[C]
 }

@@ -3,7 +3,6 @@ package scalaprops
 import scalaprops.derive.Singletons
 
 object Util {
-
   def compareGenHelper[T](first: Gen[T], second: Gen[T])(
     len: Int
   ): Boolean = {
