@@ -13,6 +13,7 @@ import shapeless._
  * or look up for an implicit `MkGen[T]`.
  */
 trait MkGen[T] {
+
   /** `Gen[T]` instance built by this `MkGen[T]` */
   def gen: Gen[T]
 }
@@ -115,6 +116,7 @@ object MkHListGen {
 }
 
 trait MkRecursiveCoproductGen[C <: Coproduct] {
+
   /** `Gen[T]` instance built by this `MkRecursiveCoproductGen[T]` */
   def gen: Gen[Recursive.Value[C]]
 }

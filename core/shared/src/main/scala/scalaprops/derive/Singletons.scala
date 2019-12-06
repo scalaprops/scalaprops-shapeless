@@ -10,6 +10,7 @@ import shapeless.labelled._
  * Used by the derived Shrink instances for ADTs in particular.
  */
 trait Singletons[T] {
+
   /**
    * Instances of `T` that can be built out of singletons, or
    * an empty sequence if none were found.
@@ -18,6 +19,7 @@ trait Singletons[T] {
 }
 
 trait LowPrioritySingletons {
+
   /**
    * Fallback case if `T` cannot be built out of singletons.
    */
@@ -58,6 +60,7 @@ object Singletons extends LowPrioritySingletons {
 }
 
 trait HListSingletons[L <: HList] {
+
   /**
    * Instances of `L` that can be built out of singletons, or
    * an empty sequence if none were found.
@@ -89,6 +92,7 @@ object HListSingletons {
 }
 
 trait CoproductSingletons[C <: Coproduct] {
+
   /**
    * Instances of `C` that can be built out of singletons, or
    * an empty sequence if none were found.
