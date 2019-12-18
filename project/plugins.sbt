@@ -1,4 +1,4 @@
-addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.0")
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "2.0.1")
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.31")
 addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")
 addSbtPlugin("com.github.scalaprops" % "sbt-scalaprops" % "0.3.2")
