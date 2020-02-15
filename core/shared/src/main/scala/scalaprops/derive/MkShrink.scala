@@ -27,9 +27,7 @@ object MkShrink {
     }
 
   private[this] def lazyxmap[T, U](from: T => U, to: U => T)(st: => Shrink[T]): Shrink[U] =
-    Shrink.shrink[U] { u =>
-      st(to(u)).map(from)
-    }
+    Shrink.shrink[U] { u => st(to(u)).map(from) }
 
   implicit def genericProduct[P, L <: HList](
     implicit gen: Generic.Aux[P, L],
