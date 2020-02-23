@@ -42,9 +42,7 @@ object Util {
     compareCogenHelper(Rand.standard(System.currentTimeMillis()))(first, second)(50)
 
   def compareShrink[T: Gen](first: Shrink[T], second: Shrink[T]): Property =
-    Property.forAll { t: T =>
-      first(t) == second(t)
-    }
+    Property.forAll { t: T => first(t) == second(t) }
 
   def validateSingletons[T: Singletons](expected: T*): Boolean = {
     val found = Singletons[T].apply()

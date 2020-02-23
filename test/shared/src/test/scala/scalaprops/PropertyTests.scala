@@ -8,9 +8,7 @@ object PropertyTests extends Scalaprops {
     sealed trait Foo
     case object Bar extends Foo
 
-    Property.forAll { (f: Int => Foo) =>
-      f(0); true
-    }
+    Property.forAll { (f: Int => Foo) => f(0); true }
   }
 
   val twoElementAdt = {
@@ -18,9 +16,7 @@ object PropertyTests extends Scalaprops {
     case class Left[A](a: A) extends Or[A, Nothing]
     case class Right[B](b: B) extends Or[Nothing, B]
 
-    Property.forAll { (f: Int => Float Or Boolean) =>
-      f(0); true
-    }
+    Property.forAll { (f: Int => Float Or Boolean) => f(0); true }
   }
 
   val recursiveADT = {
