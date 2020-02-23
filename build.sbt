@@ -121,9 +121,7 @@ lazy val publishSettings = Seq(
     )
   ),
   publishMavenStyle := true,
-  pomIncludeRepository := { _ =>
-    false
-  },
+  pomIncludeRepository := { _ => false },
   credentials ++= {
     Seq("SONATYPE_USER", "SONATYPE_PASSWORD").map(sys.env.get) match {
       case Seq(Some(user), Some(pass)) =>
