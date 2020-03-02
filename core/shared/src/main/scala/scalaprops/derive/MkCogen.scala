@@ -61,7 +61,7 @@ object MkHListCogen {
     tailCogen: MkHListCogen[T]
   ): MkHListCogen[H :: T] =
     instance(
-      Cogen.devide(
+      Cogen.divide(
         headCogen.value,
         tailCogen.cogen
       )(z => (z.head, z.tail))
