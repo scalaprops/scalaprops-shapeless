@@ -55,12 +55,7 @@ lazy val testNative = test.native
 lazy val coreName = "scalaprops-shapeless"
 
 lazy val commonSettings = Seq(
-  publishTo := Some(
-    if (isSnapshot.value)
-      Opts.resolver.sonatypeSnapshots
-    else
-      Opts.resolver.sonatypeStaging
-  ),
+  publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
   commands += Command.command("updateReadme")(updateReadmeTask),
@@ -191,9 +186,9 @@ releaseProcess := Seq[ReleaseStep](
   ),
   SetScala211,
   releaseStepCommand("coreNative/publishSigned"),
+  releaseStepCommandAndRemaining("sonatypeBundleRelease"),
   setNextVersion,
   commitNextVersion,
-  releaseStepCommand("sonatypeReleaseAll"),
   updateReadmeProcess,
   pushChanges
 )
