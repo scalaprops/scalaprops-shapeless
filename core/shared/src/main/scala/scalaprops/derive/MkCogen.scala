@@ -26,14 +26,14 @@ object MkCogen {
       def cogen = cogen0
     }
 
-  implicit def genericProduct[P, L <: HList](
-    implicit gen: Generic.Aux[P, L],
+  implicit def genericProduct[P, L <: HList](implicit
+    gen: Generic.Aux[P, L],
     cogen: shapeless.Lazy[MkHListCogen[L]]
   ): MkCogen[P] =
     instance(cogen.value.cogen.contramap(gen.to))
 
-  implicit def genericCoproduct[S, C <: Coproduct](
-    implicit gen: Generic.Aux[S, C],
+  implicit def genericCoproduct[S, C <: Coproduct](implicit
+    gen: Generic.Aux[S, C],
     cogen: shapeless.Lazy[MkCoproductCogen[C]]
   ): MkCogen[S] =
     instance(cogen.value.cogen.contramap(gen.to))
@@ -56,8 +56,8 @@ object MkHListCogen {
   implicit lazy val hnil: MkHListCogen[HNil] =
     instance(Cogen.cogenUnit.contramap(_ => ()))
 
-  implicit def hcons[H, T <: HList](
-    implicit headCogen: Strict[Cogen[H]],
+  implicit def hcons[H, T <: HList](implicit
+    headCogen: Strict[Cogen[H]],
     tailCogen: MkHListCogen[T]
   ): MkHListCogen[H :: T] =
     instance(
@@ -85,18 +85,19 @@ object MkCoproductCogen {
   implicit lazy val cnil: MkCoproductCogen[CNil] =
     instance(Cogen.cogenUnit.contramap(_ => ()))
 
-  implicit def ccons[H, T <: Coproduct](
-    implicit headCogen: Strict[Cogen[H]],
+  implicit def ccons[H, T <: Coproduct](implicit
+    headCogen: Strict[Cogen[H]],
     tailCogen: MkCoproductCogen[T]
   ): MkCoproductCogen[H :+: T] =
     instance(
       new Cogen[H :+: T] {
-        def cogen[B](a: H :+: T, g: CogenState[B]): CogenState[B] = a match {
-          case Inl(h) =>
-            headCogen.value.cogen(h, g)
-          case Inr(t) =>
-            tailCogen.cogen.cogen(t, g)
-        }
+        def cogen[B](a: H :+: T, g: CogenState[B]): CogenState[B] =
+          a match {
+            case Inl(h) =>
+              headCogen.value.cogen(h, g)
+            case Inr(t) =>
+              tailCogen.cogen.cogen(t, g)
+          }
       }
     )
 }

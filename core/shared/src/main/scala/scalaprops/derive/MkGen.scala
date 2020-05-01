@@ -19,8 +19,8 @@ trait MkGen[T] {
 }
 
 abstract class MkGenLowPriority {
-  implicit def genericNonRecursiveCoproduct[S, C <: Coproduct](
-    implicit gen: Generic.Aux[S, C],
+  implicit def genericNonRecursiveCoproduct[S, C <: Coproduct](implicit
+    gen: Generic.Aux[S, C],
     mkGen: shapeless.Lazy[MkCoproductGen[C]]
   ): MkGen[S] =
     MkGen.instance(
@@ -36,16 +36,16 @@ object MkGen extends MkGenLowPriority {
       def gen = g
     }
 
-  implicit def genericProduct[P, L <: HList](
-    implicit gen: Generic.Aux[P, L],
+  implicit def genericProduct[P, L <: HList](implicit
+    gen: Generic.Aux[P, L],
     mkGen: shapeless.Lazy[MkHListGen[L]]
   ): MkGen[P] =
     instance(
       Gen.delay(mkGen.value.gen).map(gen.from)
     )
 
-  implicit def genericRecursiveCoproduct[S, C <: Coproduct](
-    implicit rec: Recursive[S],
+  implicit def genericRecursiveCoproduct[S, C <: Coproduct](implicit
+    rec: Recursive[S],
     gen: Generic.Aux[S, C],
     mkGen: shapeless.Lazy[MkRecursiveCoproductGen[C]]
   ): MkGen[S] =
@@ -78,8 +78,8 @@ object MkHListGen {
   implicit val hnil: MkHListGen[HNil] =
     instance(Gen.value(HNil))
 
-  implicit def hcons[H, T <: HList, N <: Nat](
-    implicit headGen: Strict[Gen[H]],
+  implicit def hcons[H, T <: HList, N <: Nat](implicit
+    headGen: Strict[Gen[H]],
     tailGen: MkHListGen[T],
     length: ops.hlist.Length.Aux[T, N],
     n: ops.nat.ToInt[N]
@@ -132,8 +132,8 @@ object MkRecursiveCoproductGen {
   implicit val cnil: MkRecursiveCoproductGen[CNil] =
     instance(Gen.gen((_, r) => (r, ???)))
 
-  implicit def ccons[H, T <: Coproduct, N <: Nat](
-    implicit headGen: Strict[Gen[H]],
+  implicit def ccons[H, T <: Coproduct, N <: Nat](implicit
+    headGen: Strict[Gen[H]],
     tailGen: MkRecursiveCoproductGen[T],
     length: ops.coproduct.Length.Aux[T, N],
     n: ops.nat.ToInt[N]
@@ -169,8 +169,8 @@ object MkCoproductGen {
   implicit val cnil: MkCoproductGen[CNil] =
     instance(Gen.gen((_, r) => (r, ???)))
 
-  implicit def ccons[H, T <: Coproduct, N <: Nat](
-    implicit headGen: Strict[Gen[H]],
+  implicit def ccons[H, T <: Coproduct, N <: Nat](implicit
+    headGen: Strict[Gen[H]],
     tailGen: MkCoproductGen[T],
     length: ops.coproduct.Length.Aux[T, N],
     n: ops.nat.ToInt[N]

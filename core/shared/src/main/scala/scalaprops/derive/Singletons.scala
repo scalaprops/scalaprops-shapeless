@@ -37,14 +37,14 @@ object Singletons extends LowPrioritySingletons {
 
   def empty[T]: Singletons[T] = instance(Seq.empty)
 
-  implicit def genericProduct[P, L <: HList](
-    implicit gen: Generic.Aux[P, L],
+  implicit def genericProduct[P, L <: HList](implicit
+    gen: Generic.Aux[P, L],
     reprSingletons: shapeless.Lazy[HListSingletons[L]]
   ): Singletons[P] =
     instance(reprSingletons.value().map(gen.from))
 
-  implicit def genericCoproduct[S, C <: Coproduct](
-    implicit gen: Generic.Aux[S, C],
+  implicit def genericCoproduct[S, C <: Coproduct](implicit
+    gen: Generic.Aux[S, C],
     reprSingletons: shapeless.Lazy[CoproductSingletons[C]]
   ): Singletons[S] =
     instance(reprSingletons.value().map(gen.from))
@@ -79,8 +79,8 @@ object HListSingletons {
   implicit val hnil: HListSingletons[HNil] =
     instance(Seq(HNil))
 
-  implicit def hconsFound[H, T <: HList](
-    implicit headSingletons: Strict[Singletons[H]],
+  implicit def hconsFound[H, T <: HList](implicit
+    headSingletons: Strict[Singletons[H]],
     tailSingletons: HListSingletons[T]
   ): HListSingletons[H :: T] =
     instance {
@@ -111,8 +111,8 @@ object CoproductSingletons {
   implicit val cnil: CoproductSingletons[CNil] =
     instance(Seq.empty)
 
-  implicit def ccons[H, T <: Coproduct](
-    implicit headSingletons: Strict[Singletons[H]],
+  implicit def ccons[H, T <: Coproduct](implicit
+    headSingletons: Strict[Singletons[H]],
     tailSingletons: CoproductSingletons[T]
   ): CoproductSingletons[H :+: T] =
     instance(headSingletons.value().map(Inl(_)) ++ tailSingletons().map(Inr(_)))
