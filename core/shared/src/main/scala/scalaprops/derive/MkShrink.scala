@@ -29,16 +29,16 @@ object MkShrink {
   private[this] def lazyxmap[T, U](from: T => U, to: U => T)(st: => Shrink[T]): Shrink[U] =
     Shrink.shrink[U] { u => st(to(u)).map(from) }
 
-  implicit def genericProduct[P, L <: HList](
-    implicit gen: Generic.Aux[P, L],
+  implicit def genericProduct[P, L <: HList](implicit
+    gen: Generic.Aux[P, L],
     shrink: shapeless.Lazy[MkHListShrink[L]]
   ): MkShrink[P] =
     instance(
       lazyxmap(gen.from, gen.to)(shrink.value.shrink)
     )
 
-  implicit def genericCoproduct[S, C <: Coproduct](
-    implicit gen: Generic.Aux[S, C],
+  implicit def genericCoproduct[S, C <: Coproduct](implicit
+    gen: Generic.Aux[S, C],
     shrink: shapeless.Lazy[MkCoproductShrink[C]]
   ): MkShrink[S] =
     instance(
@@ -63,8 +63,8 @@ object MkHListShrink {
   implicit val hnil: MkHListShrink[HNil] =
     instance(Shrink.empty)
 
-  implicit def hcons[H, T <: HList](
-    implicit headShrink: Strict[Shrink[H]],
+  implicit def hcons[H, T <: HList](implicit
+    headShrink: Strict[Shrink[H]],
     tailShrink: MkHListShrink[T]
   ): MkHListShrink[H :: T] =
     instance(
@@ -93,8 +93,8 @@ object MkCoproductShrink {
   implicit val cnil: MkCoproductShrink[CNil] =
     instance(Shrink.empty)
 
-  implicit def ccons[H, T <: Coproduct](
-    implicit headShrink: Strict[Shrink[H]],
+  implicit def ccons[H, T <: Coproduct](implicit
+    headShrink: Strict[Shrink[H]],
     tailShrink: MkCoproductShrink[T],
     headSingletons: Strict[Singletons[H]],
     tailSingletons: Strict[Singletons[T]]
