@@ -11,8 +11,10 @@ object Util {
     generated.forall { case (a, b) => a == b }
   }
 
-  /** Ask each `Gen[T]` a sequence of values, given the same parameters and initial seed,
-   * and return false if both sequences aren't equal. */
+  /**
+   * Ask each `Gen[T]` a sequence of values, given the same parameters and initial seed,
+   * and return false if both sequences aren't equal.
+   */
   def compareGen[T](first: Gen[T], second: Gen[T]): Boolean = {
     compareGenHelper(first, second)(100)
   }
