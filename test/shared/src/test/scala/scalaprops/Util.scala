@@ -30,13 +30,12 @@ object Util {
     val secondSeeds = values.scanLeft(s)((x, y) => second.cogen(y, x))
     val seeds = firstSeeds zip secondSeeds
 
-    seeds.forall {
-      case (a, b) =>
-        val s = System.currentTimeMillis()
-        val size = 20
-        (a.rand == b.rand) && {
-          a.gen.samples(seed = s, listSize = size) == b.gen.samples(seed = s, listSize = size)
-        }
+    seeds.forall { case (a, b) =>
+      val s = System.currentTimeMillis()
+      val size = 20
+      (a.rand == b.rand) && {
+        a.gen.samples(seed = s, listSize = size) == b.gen.samples(seed = s, listSize = size)
+      }
     }
   }
 
