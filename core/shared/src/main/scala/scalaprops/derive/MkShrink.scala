@@ -68,10 +68,9 @@ object MkHListShrink {
     tailShrink: MkHListShrink[T]
   ): MkHListShrink[H :: T] =
     instance(
-      Shrink.shrink {
-        case h :: t =>
-          headShrink.value(h).map(_ :: t) #:::
-            tailShrink.shrink(t).map(h :: _)
+      Shrink.shrink { case h :: t =>
+        headShrink.value(h).map(_ :: t) #:::
+          tailShrink.shrink(t).map(h :: _)
       }
     )
 }
