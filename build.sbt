@@ -29,6 +29,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     },
     scalaJSStage in Test := FastOptStage
   )
+  .nativeSettings(
+    crossScalaVersions := Scala211 :: Nil
+  )
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
@@ -45,6 +48,7 @@ lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     scalaJSStage in Test := FastOptStage
   )
   .nativeSettings(
+    crossScalaVersions := Scala211 :: Nil,
     scalapropsNativeSettings
   )
 
@@ -54,7 +58,11 @@ lazy val testNative = test.native
 
 lazy val coreName = "scalaprops-shapeless"
 
+def Scala211 = "2.11.12"
+
 lazy val commonSettings = Seq(
+  scalaVersion := Scala211,
+  crossScalaVersions := Scala211 :: "2.12.12" :: "2.13.3" :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
