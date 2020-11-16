@@ -68,7 +68,7 @@ lazy val commonSettings = Seq(
   releaseCrossBuild := true,
   commands += Command.command("updateReadme")(updateReadmeTask),
   organization := "com.github.scalaprops",
-  scalapropsVersion := "0.8.0"
+  scalapropsVersion := "0.8.1"
 ) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
 
 lazy val unusedWarnings = Seq("-Ywarn-unused")
