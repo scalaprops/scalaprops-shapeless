@@ -62,7 +62,7 @@ def Scala211 = "2.11.12"
 
 lazy val commonSettings = Seq(
   scalaVersion := Scala211,
-  crossScalaVersions := Scala211 :: "2.12.12" :: "2.13.4" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.4" :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
