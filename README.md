@@ -41,7 +41,7 @@ and in particular, while writing property-based tests,
 
 ```scala
 val `some property about Foo` = Property.forAll {
-  foo: Foo =>
+  (foo: Foo) =>
     // Ensure foo has the required property
 }
 ```
