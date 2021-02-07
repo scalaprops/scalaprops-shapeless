@@ -4,7 +4,7 @@ Generation of arbitrary case classes / ADTs instances with [scalaprops](https://
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.scalaprops/scalaprops-shapeless_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.scalaprops/scalaprops-shapeless_2.12)
 [![scaladoc](https://javadoc-badge.appspot.com/com.github.scalaprops/scalaprops-shapeless_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.scalaprops/scalaprops-shapeless_2.12/scalaprops/index.html?javadocio=true)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.14.svg)](https://www.scala-js.org)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.4.0.svg)](https://www.scala-js.org)
 
 ## Usage
 
