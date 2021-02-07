@@ -10,7 +10,7 @@ Generation of arbitrary case classes / ADTs instances with [scalaprops](https://
 
 Add to your `build.sbt`
 ```scala
-libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.3.2"
+libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.4.0"
 ```
 
 scalaprops-shapeless depends on shapeless 2.3. It is built against scala 2.11, and 2.12.
