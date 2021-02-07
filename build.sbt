@@ -193,7 +193,7 @@ releaseProcess := Seq[ReleaseStep](
     enableCrossBuild = true
   ),
   SetScala211,
-  releaseStepCommand("coreNative/publishSigned"),
+  releaseStepCommandAndRemaining("coreNative/publishSigned"),
   releaseStepCommandAndRemaining("sonatypeBundleRelease"),
   setNextVersion,
   commitNextVersion,
