@@ -4,13 +4,13 @@ Generation of arbitrary case classes / ADTs instances with [scalaprops](https://
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.scalaprops/scalaprops-shapeless_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.scalaprops/scalaprops-shapeless_2.12)
 [![scaladoc](https://javadoc-badge.appspot.com/com.github.scalaprops/scalaprops-shapeless_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.github.scalaprops/scalaprops-shapeless_2.12/scalaprops/index.html?javadocio=true)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.14.svg)](https://www.scala-js.org)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.4.0.svg)](https://www.scala-js.org)
 
 ## Usage
 
 Add to your `build.sbt`
 ```scala
-libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.3.2"
+libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.4.0"
 ```
 
 scalaprops-shapeless depends on shapeless 2.3. It is built against scala 2.11, and 2.12.
@@ -41,7 +41,7 @@ and in particular, while writing property-based tests,
 
 ```scala
 val `some property about Foo` = Property.forAll {
-  foo: Foo =>
+  (foo: Foo) =>
     // Ensure foo has the required property
 }
 ```
