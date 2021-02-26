@@ -58,7 +58,7 @@ lazy val testNative = test.native
 
 lazy val coreName = "scalaprops-shapeless"
 
-def Scala211 = "2.11.12"
+def Scala211 = "2.13.5"
 
 lazy val commonSettings = Seq(
   scalaVersion := Scala211,
