@@ -1,7 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 lazy val tagName = Def.setting {
-  s"v${if (releaseUseGlobalVersion.value) (version in ThisBuild).value else version.value}"
+  s"v${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}"
 }
 lazy val tagOrHash = Def.setting {
   if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
@@ -23,11 +23,11 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .jsSettings(
     scalacOptions += {
-      val a = (baseDirectory in LocalRootProject).value.toURI.toString
+      val a = (LocalRootProject / baseDirectory).value.toURI.toString
       val g = "https://raw.githubusercontent.com/scalaprops/scalaprops-shapeless/" + tagOrHash.value
       s"-P:scalajs:mapSourceURI:$a->$g/"
     },
-    scalaJSStage in Test := FastOptStage
+    Test / scalaJSStage := FastOptStage
   )
   .nativeSettings(
     crossScalaVersions := Scala211 :: Nil
@@ -45,7 +45,7 @@ lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .settings(noPublishSettings)
   .jsSettings(
-    scalaJSStage in Test := FastOptStage
+    Test / scalaJSStage := FastOptStage
   )
   .nativeSettings(
     crossScalaVersions := Scala211 :: Nil,
@@ -62,7 +62,7 @@ def Scala211 = "2.11.12"
 
 lazy val commonSettings = Seq(
   scalaVersion := Scala211,
-  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.4" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.13" :: "2.13.5" :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
@@ -74,11 +74,11 @@ lazy val commonSettings = Seq(
 lazy val unusedWarnings = Seq("-Ywarn-unused")
 
 lazy val compileSettings = Seq(
-  scalacOptions in (Compile, doc) ++= {
+  (Compile / doc / scalacOptions) ++= {
     val tag = tagOrHash.value
     Seq(
       "-sourcepath",
-      (baseDirectory in LocalRootProject).value.getAbsolutePath,
+      (LocalRootProject / baseDirectory).value.getAbsolutePath,
       "-doc-source-url",
       s"https://github.com/scalaprops/scalaprops-shapeless/tree/${tag}€{FILE_PATH}.scala"
     )
@@ -101,7 +101,7 @@ lazy val compileSettings = Seq(
     "-language:higherKinds",
     "-language:implicitConversions"
   )
-) ++ Seq(Compile, Test).flatMap(c => scalacOptions in (c, console) --= unusedWarnings)
+) ++ Seq(Compile, Test).flatMap(c => c / console / scalacOptions --= unusedWarnings)
 
 lazy val publishSettings = Seq(
   homepage := Some(url("https://github.com/scalaprops/scalaprops-shapeless")),
@@ -188,7 +188,7 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(
     action = { state =>
       val extracted = Project extract state
-      extracted.runAggregated(PgpKeys.publishSigned in Global in extracted.get(thisProjectRef), state)
+      extracted.runAggregated(extracted.get(thisProjectRef) / (Global / PgpKeys.publishSigned), state)
     },
     enableCrossBuild = true
   ),
