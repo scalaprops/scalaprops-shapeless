@@ -17,7 +17,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := coreName,
     moduleName := coreName,
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % "2.3.3",
+      "com.chuusai" %%% "shapeless" % "2.3.4-M1",
       "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value
     )
   )
@@ -28,9 +28,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       s"-P:scalajs:mapSourceURI:$a->$g/"
     },
     Test / scalaJSStage := FastOptStage
-  )
-  .nativeSettings(
-    crossScalaVersions := Scala211 :: Nil
   )
 
 lazy val coreJVM = core.jvm
@@ -48,7 +45,6 @@ lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     Test / scalaJSStage := FastOptStage
   )
   .nativeSettings(
-    crossScalaVersions := Scala211 :: Nil,
     scalapropsNativeSettings
   )
 
