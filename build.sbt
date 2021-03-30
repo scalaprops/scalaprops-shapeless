@@ -8,8 +8,8 @@ lazy val tagOrHash = Def.setting {
   else tagName.value
 }
 
-lazy val `scalaprops-shapeless` =
-  project.in(file(".")).aggregate(coreJVM, coreJS, testJVM, testJS).settings(commonSettings).settings(noPublishSettings)
+commonSettings
+noPublishSettings
 
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
@@ -170,8 +170,6 @@ lazy val updateReadmeProcess: ReleaseStep = updateReadmeTask
 
 import ReleaseTransformations._
 
-val SetScala211 = releaseStepCommand("++ 2.11.12")
-
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
@@ -188,8 +186,6 @@ releaseProcess := Seq[ReleaseStep](
     },
     enableCrossBuild = true
   ),
-  SetScala211,
-  releaseStepCommandAndRemaining("coreNative/publishSigned"),
   releaseStepCommandAndRemaining("sonatypeBundleRelease"),
   setNextVersion,
   commitNextVersion,
