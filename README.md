@@ -13,7 +13,7 @@ Add to your `build.sbt`
 libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.4.1"
 ```
 
-scalaprops-shapeless depends on shapeless 2.3. It is built against scala 2.11, and 2.12.
+scalaprops-shapeless depends on shapeless 2.3.
 
 Import the content of `scalaprops.Shapeless` close to where you want
 `scalaprops.Gen` type classes to be automatically available for case classes / sealed hierarchies,
