@@ -17,7 +17,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := coreName,
     moduleName := coreName,
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % "2.3.6",
+      "com.chuusai" %%% "shapeless" % "2.3.7",
       "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value
     )
   )
