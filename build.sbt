@@ -16,8 +16,14 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(
     name := coreName,
     moduleName := coreName,
+    libraryDependencies += {
+      if (scalaBinaryVersion.value == "3") {
+        "org.typelevel" %%% "shapeless3-deriving" % "3.0.1"
+      } else {
+        "com.chuusai" %%% "shapeless" % "2.3.7"
+      }
+    },
     libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % "2.3.7",
       "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value
     )
   )
@@ -57,7 +63,7 @@ lazy val coreName = "scalaprops-shapeless"
 def Scala211 = "2.11.12"
 
 lazy val commonSettings = Seq(
-  scalaVersion := Scala211,
+  scalaVersion := "3.0.0",
   crossScalaVersions := Scala211 :: "2.12.14" :: "2.13.6" :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
