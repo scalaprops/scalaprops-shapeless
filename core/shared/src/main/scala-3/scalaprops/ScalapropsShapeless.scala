@@ -4,6 +4,43 @@ import shapeless3.deriving.*
 
 sealed abstract class ScalapropsShapelessInstances {
 
+  /*
+  https://java-src.appspot.com/com.github.scalaprops/scalaprops-gen_3/0.8.3/scalaprops/CogenInstances.scala
+
+      def cogen[Z](a: Either[A, B], g: CogenState[Z]) =
+        a match {
+          case Right(x) =>
+            variantInt(1, B.cogen(x, g))
+          case Left(x) =>
+            variantInt(0, A.cogen(x, g.copy(rand = g.rand.next)))
+        }
+
+     def inject[R](p: Int)(f: [t <: T] => F[t] => R): R =
+
+     def fold[R](x: T)(f: [t] => (F[t], t) => R): R =
+
+     def fold2[R](x: T, y: T)(a: => R)(f: [t] => (F[t], t, t) => R): R =
+
+     def fold2[R](x: T, y: T)(g: (Int, Int) => R)(f: [t] => (F[t], t, t) => R): R =
+  */
+
+  inline given cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
+    new Cogen[A] {
+      override def cogen[B](a: A, s: CogenState[B]) = {
+        // TODO
+        ???
+      }
+    }
+
+  inline given cogenProduct[A](using inst: => K0.ProductInstances[Cogen, A]): Cogen[A] =
+    new Cogen[A] {
+      override def cogen[B](a: A, s: CogenState[B]) = {
+        inst.foldRight[CogenState[B]](a)(s)(
+          [t] => (acc: CogenState[B], c: Cogen[t], t: t) => c.cogen(t, acc)
+        )
+      }
+    }
+
   inline given genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
     Gen.gen[A]((size, rand) =>
       val (x, y) = inst.unfold[Rand](rand){

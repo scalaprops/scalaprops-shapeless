@@ -11,6 +11,34 @@ lazy val tagOrHash = Def.setting {
 commonSettings
 noPublishSettings
 
+lazy val disableScala3 = Def.settings(
+  crossScalaVersions -= Scala3,
+  libraryDependencies := {
+    if (scalaBinaryVersion.value == "3") {
+      Nil
+    } else {
+      libraryDependencies.value
+    }
+  },
+  Seq(Compile, Test).map { x =>
+    (x / sources) := {
+      if (scalaBinaryVersion.value == "3") {
+        Nil
+      } else {
+        (x / sources).value
+      }
+    }
+  },
+  Test / Keys.test := {
+    if (scalaBinaryVersion.value == "3") {
+      ()
+    } else {
+      (Test / Keys.test).value
+    }
+  },
+  publish / skip := (scalaBinaryVersion.value == "3")
+)
+
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
   .settings(
@@ -35,6 +63,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     },
     Test / scalaJSStage := FastOptStage
   )
+  .nativeSettings(
+    disableScala3
+  )
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
@@ -51,6 +82,7 @@ lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     Test / scalaJSStage := FastOptStage
   )
   .nativeSettings(
+    disableScala3,
     scalapropsNativeSettings
   )
 
@@ -61,10 +93,11 @@ lazy val testNative = test.native
 lazy val coreName = "scalaprops-shapeless"
 
 def Scala211 = "2.11.12"
+def Scala3 = "3.0.0"
 
 lazy val commonSettings = Seq(
-  scalaVersion := "3.0.0",
-  crossScalaVersions := Scala211 :: "2.12.14" :: "2.13.6" :: Nil,
+  scalaVersion := Scala3,
+  crossScalaVersions := Scala211 :: "2.12.14" :: "2.13.6" :: Scala3 :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
@@ -91,7 +124,7 @@ lazy val compileSettings = Seq(
     } else {
       unusedWarnings ++ Seq(
         "-Xlint",
-        "-Xfuture",
+        "-Xfuture"
       )
     }
   },
