@@ -7,9 +7,7 @@ sealed abstract class ScalapropsShapelessInstances {
   inline given cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
     new Cogen[A] {
       override def cogen[B](a: A, s: CogenState[B]) = {
-        val i = inst.is.indexOf(a)
-        val n = Variant.variantInt(i, s)
-        inst.fold(a)([t] => (c: Cogen[t], t: t) => c.cogen(t, n))
+        inst.fold(a)([t] => (c: Cogen[t], t: t) => c.cogen(t, s))
       }
     }
 
