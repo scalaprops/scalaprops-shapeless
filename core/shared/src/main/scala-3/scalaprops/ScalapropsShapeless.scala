@@ -2,7 +2,8 @@ package scalaprops
 
 import shapeless3.deriving.*
 
-object ScalapropsShapeless {
+sealed abstract class ScalapropsShapelessInstances {
+
   inline given genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
     Gen.gen[A]((size, rand) =>
       val (x, y) = inst.unfold[Rand](rand){
@@ -30,7 +31,9 @@ object ScalapropsShapeless {
       }
       (x, y.get)
     )
- 
-  inline def derived[A](using gen: K0.Generic[A]): Gen[A] =
+}
+
+object ScalapropsShapeless extends ScalapropsShapelessInstances {
+  inline given derived[A](using gen: K0.Generic[A]): Gen[A] =
     gen.derive(genProduct, genCoproduct)
 }

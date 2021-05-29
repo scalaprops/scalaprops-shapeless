@@ -85,7 +85,16 @@ lazy val compileSettings = Seq(
       s"https://github.com/scalaprops/scalaprops-shapeless/tree/${tag}€{FILE_PATH}.scala"
     )
   },
-  scalacOptions ++= unusedWarnings,
+  scalacOptions ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Nil
+    } else {
+      unusedWarnings ++ Seq(
+        "-Xlint",
+        "-Xfuture",
+      )
+    }
+  },
   scalacOptions ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v <= 12 =>
@@ -97,8 +106,6 @@ lazy val compileSettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
-    "-Xlint",
-    "-Xfuture",
     "-language:existentials",
     "-language:higherKinds",
     "-language:implicitConversions"
