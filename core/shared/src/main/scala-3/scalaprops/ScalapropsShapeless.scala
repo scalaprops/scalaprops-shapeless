@@ -4,31 +4,12 @@ import shapeless3.deriving.*
 
 sealed abstract class ScalapropsShapelessInstances {
 
-  /*
-  https://java-src.appspot.com/com.github.scalaprops/scalaprops-gen_3/0.8.3/scalaprops/CogenInstances.scala
-
-      def cogen[Z](a: Either[A, B], g: CogenState[Z]) =
-        a match {
-          case Right(x) =>
-            variantInt(1, B.cogen(x, g))
-          case Left(x) =>
-            variantInt(0, A.cogen(x, g.copy(rand = g.rand.next)))
-        }
-
-     def inject[R](p: Int)(f: [t <: T] => F[t] => R): R =
-
-     def fold[R](x: T)(f: [t] => (F[t], t) => R): R =
-
-     def fold2[R](x: T, y: T)(a: => R)(f: [t] => (F[t], t, t) => R): R =
-
-     def fold2[R](x: T, y: T)(g: (Int, Int) => R)(f: [t] => (F[t], t, t) => R): R =
-  */
-
   inline given cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
     new Cogen[A] {
       override def cogen[B](a: A, s: CogenState[B]) = {
-        // TODO
-        ???
+        val i = inst.is.indexOf(a)
+        val n = Variant.variantInt(i, s)
+        inst.fold(a)([t] => (c: Cogen[t], t: t) => c.cogen(t, n))
       }
     }
 
@@ -71,6 +52,9 @@ sealed abstract class ScalapropsShapelessInstances {
 }
 
 object ScalapropsShapeless extends ScalapropsShapelessInstances {
-  inline given derived[A](using gen: K0.Generic[A]): Gen[A] =
+  inline given deriveGen[A](using gen: K0.Generic[A]): Gen[A] =
     gen.derive(genProduct, genCoproduct)
+
+  inline given deriveCogen[A](using gen: K0.Generic[A]): Cogen[A] =
+    gen.derive(cogenProduct, cogenCoproduct)
 }
