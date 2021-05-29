@@ -25,7 +25,13 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     scalacOptions += {
       val a = (LocalRootProject / baseDirectory).value.toURI.toString
       val g = "https://raw.githubusercontent.com/scalaprops/scalaprops-shapeless/" + tagOrHash.value
-      s"-P:scalajs:mapSourceURI:$a->$g/"
+      val key = scalaBinaryVersion.value match {
+        case "3" =>
+          "-scalajs-mapSourceURI"
+        case _ =>
+          "-P:scalajs:mapSourceURI"
+      }
+      s"${key}:$a->$g/"
     },
     Test / scalaJSStage := FastOptStage
   )
