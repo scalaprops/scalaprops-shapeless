@@ -1,6 +1,6 @@
 package scalaprops
 
-import Shapeless._
+import ScalapropsShapeless._
 import scalaprops.TestsDefinitions.{T1, T1NoRecursiveTC}
 
 object PropertyTests extends Scalaprops {

@@ -1,6 +1,6 @@
 package scalaprops
 
-import scalaprops.Shapeless._
+import scalaprops.ScalapropsShapeless._
 import scalaprops.derive._
 import shapeless._
 import shapeless.labelled._

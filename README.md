@@ -15,11 +15,11 @@ libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.4.
 
 scalaprops-shapeless depends on shapeless 2.3.
 
-Import the content of `scalaprops.Shapeless` close to where you want
+Import the content of `scalaprops.ScalapropsShapeless` close to where you want
 `scalaprops.Gen` type classes to be automatically available for case classes / sealed hierarchies,
 
 ```scala
-import scalaprops.Shapeless._
+import scalaprops.ScalapropsShapeless._
 
 //  If you defined:
 

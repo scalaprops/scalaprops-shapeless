@@ -12,7 +12,7 @@ import Util._
 
 object GenTests extends Scalaprops {
   import TestsDefinitions._
-  import Shapeless._
+  import ScalapropsShapeless._
 
   private[this] implicit val genString: Gen[String] =
     Gen.asciiString
@@ -214,7 +214,7 @@ object GenTests extends Scalaprops {
         MkHListGen.hcons(
           Gen[Int],
           MkHListGen.hcons(
-            Shapeless.genSingletonType[Witness.`"aa"`.T],
+            ScalapropsShapeless.genSingletonType[Witness.`"aa"`.T],
             MkHListGen.hnil,
             ops.hlist.Length[HNil],
             ops.nat.ToInt[Nat._0]
@@ -230,7 +230,7 @@ object GenTests extends Scalaprops {
       .genericProduct(
         Generic[BaseWithSingleton.Main],
         MkHListGen.hcons(
-          Shapeless.genSingletonType[Witness.`"aa"`.T],
+          ScalapropsShapeless.genSingletonType[Witness.`"aa"`.T],
           MkHListGen.hnil,
           ops.hlist.Length[HNil],
           ops.nat.ToInt[Nat._0]

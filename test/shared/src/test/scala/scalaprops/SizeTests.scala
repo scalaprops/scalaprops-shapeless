@@ -1,7 +1,7 @@
 package scalaprops
 
 object SizeTests0 {
-  import scalaprops.Shapeless._
+  import scalaprops.ScalapropsShapeless._
 
   import SizeTestsDefinitions._
 

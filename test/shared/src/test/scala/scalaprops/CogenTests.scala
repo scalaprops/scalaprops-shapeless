@@ -11,7 +11,7 @@ import Util._
 
 object CogenTests extends Scalaprops {
   import TestsDefinitions._
-  import Shapeless._
+  import ScalapropsShapeless._
 
   private[this] implicit val genString: Gen[String] =
     Gen.asciiString
