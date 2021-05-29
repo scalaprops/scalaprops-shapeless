@@ -11,15 +11,52 @@ lazy val tagOrHash = Def.setting {
 commonSettings
 noPublishSettings
 
+lazy val disableScala3 = Def.settings(
+  crossScalaVersions -= Scala3,
+  libraryDependencies := {
+    if (scalaBinaryVersion.value == "3") {
+      Nil
+    } else {
+      libraryDependencies.value
+    }
+  },
+  Seq(Compile, Test).map { x =>
+    (x / sources) := {
+      if (scalaBinaryVersion.value == "3") {
+        Nil
+      } else {
+        (x / sources).value
+      }
+    }
+  },
+  Test / Keys.test := {
+    if (scalaBinaryVersion.value == "3") {
+      ()
+    } else {
+      (Test / Keys.test).value
+    }
+  },
+  publish / skip := (scalaBinaryVersion.value == "3")
+)
+
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
   .settings(
     name := coreName,
     moduleName := coreName,
-    libraryDependencies ++= Seq(
-      "com.chuusai" %%% "shapeless" % "2.3.7",
-      "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value
-    )
+    libraryDependencies ++= {
+      if (scalaBinaryVersion.value == "3") {
+        Seq(
+          "com.github.scalaprops" %%% "scalaprops-gen" % scalapropsVersion.value,
+          "org.typelevel" %%% "shapeless3-deriving" % "3.0.1"
+        )
+      } else {
+        Seq(
+          "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value,
+          "com.chuusai" %%% "shapeless" % "2.3.7"
+        )
+      }
+    }
   )
   .jsSettings(
     scalacOptions += {
@@ -34,6 +71,9 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       s"${key}:$a->$g/"
     },
     Test / scalaJSStage := FastOptStage
+  )
+  .nativeSettings(
+    disableScala3
   )
 
 lazy val coreJVM = core.jvm
@@ -51,6 +91,7 @@ lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     Test / scalaJSStage := FastOptStage
   )
   .nativeSettings(
+    disableScala3,
     scalapropsNativeSettings
   )
 
@@ -61,10 +102,11 @@ lazy val testNative = test.native
 lazy val coreName = "scalaprops-shapeless"
 
 def Scala211 = "2.11.12"
+def Scala3 = "3.0.0"
 
 lazy val commonSettings = Def.settings(
   scalaVersion := Scala211,
-  crossScalaVersions := Scala211 :: "2.12.14" :: "2.13.6" :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.14" :: "2.13.6" :: Scala3 :: Nil,
   publishTo := sonatypePublishToBundle.value,
   Seq(Compile, Test).map { x =>
     (x / unmanagedSourceDirectories) ++= {
@@ -96,7 +138,16 @@ lazy val compileSettings = Seq(
       s"https://github.com/scalaprops/scalaprops-shapeless/tree/${tag}€{FILE_PATH}.scala"
     )
   },
-  scalacOptions ++= unusedWarnings,
+  scalacOptions ++= {
+    if (scalaBinaryVersion.value == "3") {
+      Nil
+    } else {
+      unusedWarnings ++ Seq(
+        "-Xlint",
+        "-Xfuture"
+      )
+    }
+  },
   scalacOptions ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v <= 12 =>
@@ -108,8 +159,6 @@ lazy val compileSettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation",
     "-unchecked",
-    "-Xlint",
-    "-Xfuture",
     "-language:existentials",
     "-language:higherKinds",
     "-language:implicitConversions"
