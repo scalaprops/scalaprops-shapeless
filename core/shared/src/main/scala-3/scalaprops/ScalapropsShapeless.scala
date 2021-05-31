@@ -4,14 +4,14 @@ import shapeless3.deriving.K0
 
 sealed abstract class ScalapropsShapelessInstances {
 
-  inline given cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
+  inline implicit def cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
     new Cogen[A] {
       override def cogen[B](a: A, s: CogenState[B]) = {
         inst.fold(a)([t] => (c: Cogen[t], t: t) => c.cogen(t, s))
       }
     }
 
-  inline given cogenProduct[A](using inst: => K0.ProductInstances[Cogen, A]): Cogen[A] =
+  inline implicit def cogenProduct[A](using inst: => K0.ProductInstances[Cogen, A]): Cogen[A] =
     new Cogen[A] {
       override def cogen[B](a: A, s: CogenState[B]) = {
         inst.foldLeft[CogenState[B]](a)(s)(
@@ -20,7 +20,7 @@ sealed abstract class ScalapropsShapelessInstances {
       }
     }
 
-  inline given genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
+  inline implicit def genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
     Gen.gen[A]((size, rand) =>
       val (x, y) = inst.unfold[Rand](rand){
         [t] => (r: Rand, g: Gen[t]) => {
@@ -31,7 +31,7 @@ sealed abstract class ScalapropsShapelessInstances {
       (x, y.get)
     )
 
-  inline given genCoproduct[A](using inst: => K0.CoproductInstances[Gen, A]): Gen[A] =
+  inline implicit def genCoproduct[A](using inst: => K0.CoproductInstances[Gen, A]): Gen[A] =
     Gen.gen[A]((size, r1) =>
       val (r2, i) = r1.nextInt
       val index = if (i == Int.MinValue) {
@@ -52,10 +52,10 @@ sealed abstract class ScalapropsShapelessInstances {
 
 object ScalapropsShapeless extends ScalapropsShapelessInstances {
 
-  inline given deriveGen[A](using gen: K0.Generic[A]): Gen[A] =
+  inline implicit def deriveGen[A](using gen: K0.Generic[A]): Gen[A] =
     gen.derive(genProduct, genCoproduct)
 
-  inline given deriveCogen[A](using gen: K0.Generic[A]): Cogen[A] =
+  inline implicit def deriveCogen[A](using gen: K0.Generic[A]): Cogen[A] =
     gen.derive(cogenProduct, cogenCoproduct)
 
 }
