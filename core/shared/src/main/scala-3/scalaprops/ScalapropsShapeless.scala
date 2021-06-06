@@ -22,10 +22,11 @@ sealed abstract class ScalapropsShapelessInstances {
 
   inline implicit def genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
     Gen.gen[A]((size, rand) =>
-      val (x, y) = inst.unfold[Rand](rand){
-        [t] => (r: Rand, g: Gen[t]) => {
-          val (next, a) = g.f(size, r)
-          (next, Option(a))
+      val (x, y) = inst.unfold[Rand](rand) {
+        [t] =>
+          (r: Rand, g: Gen[t]) => {
+            val (next, a) = g.f(size, r)
+            (next, Option(a))
         }
       }
       (x, y.get)
@@ -39,10 +40,11 @@ sealed abstract class ScalapropsShapelessInstances {
       } else {
         i.abs % inst.is.length
       }
-      val (x, y) = inst.project[Rand](index)(r2){
-        [t] => (r3: Rand, g: Gen[t]) => {
-          val (r4, a) = g.f(size, r3)
-          (r4, Option(a))
+      val (x, y) = inst.project[Rand](index)(r2) {
+        [t] =>
+          (r3: Rand, g: Gen[t]) => {
+            val (r4, a) = g.f(size, r3)
+            (r4, Option(a))
         }
       }
       (x, y.get)
