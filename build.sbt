@@ -108,17 +108,6 @@ lazy val commonSettings = Def.settings(
   scalaVersion := Scala211,
   crossScalaVersions := Scala211 :: "2.12.14" :: "2.13.6" :: Scala3 :: Nil,
   publishTo := sonatypePublishToBundle.value,
-  Seq(Compile, Test).map { x =>
-    (x / unmanagedSourceDirectories) ++= {
-      if (CrossVersion.partialVersion(scalaVersion.value).exists(_._1 == 2)) {
-        Seq(
-          baseDirectory.value.getParentFile / "shared/src" / Defaults.nameForSrc(x.name) / "scala-2"
-        )
-      } else {
-        Nil
-      }
-    }
-  },
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
   commands += Command.command("updateReadme")(updateReadmeTask),
