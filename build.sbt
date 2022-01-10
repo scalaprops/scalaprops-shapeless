@@ -106,7 +106,7 @@ def Scala3 = "3.1.0"
 
 lazy val commonSettings = Def.settings(
   scalaVersion := Scala211,
-  crossScalaVersions := Scala211 :: "2.12.15" :: "2.13.7" :: Scala3 :: Nil,
+  crossScalaVersions := Scala211 :: "2.12.15" :: "2.13.8" :: Scala3 :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
