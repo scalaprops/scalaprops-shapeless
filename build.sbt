@@ -11,34 +11,6 @@ lazy val tagOrHash = Def.setting {
 commonSettings
 noPublishSettings
 
-lazy val disableScala3 = Def.settings(
-  crossScalaVersions -= Scala3,
-  libraryDependencies := {
-    if (scalaBinaryVersion.value == "3") {
-      Nil
-    } else {
-      libraryDependencies.value
-    }
-  },
-  Seq(Compile, Test).map { x =>
-    (x / sources) := {
-      if (scalaBinaryVersion.value == "3") {
-        Nil
-      } else {
-        (x / sources).value
-      }
-    }
-  },
-  Test / Keys.test := {
-    if (scalaBinaryVersion.value == "3") {
-      ()
-    } else {
-      (Test / Keys.test).value
-    }
-  },
-  publish / skip := (scalaBinaryVersion.value == "3")
-)
-
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .settings(commonSettings)
   .settings(
@@ -72,9 +44,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     },
     Test / scalaJSStage := FastOptStage
   )
-  .nativeSettings(
-    disableScala3
-  )
 
 lazy val coreJVM = core.jvm
 lazy val coreJS = core.js
@@ -91,7 +60,6 @@ lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     Test / scalaJSStage := FastOptStage
   )
   .nativeSettings(
-    disableScala3,
     scalapropsNativeSettings
   )
 
