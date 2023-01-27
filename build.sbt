@@ -69,12 +69,12 @@ lazy val testNative = test.native
 
 lazy val coreName = "scalaprops-shapeless"
 
-def Scala211 = "2.11.12"
+def Scala212 = "2.12.17"
 def Scala3 = "3.2.2"
 
 lazy val commonSettings = Def.settings(
-  scalaVersion := Scala211,
-  crossScalaVersions := Scala211 :: "2.12.17" :: "2.13.10" :: Scala3 :: Nil,
+  scalaVersion := Scala212,
+  crossScalaVersions := Scala212 :: "2.13.10" :: Scala3 :: Nil,
   publishTo := sonatypePublishToBundle.value,
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
