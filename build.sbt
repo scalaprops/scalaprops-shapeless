@@ -162,31 +162,32 @@ lazy val noPublishSettings = Seq(
   publishArtifact := false
 )
 
-lazy val updateReadmeTask = { state: State =>
-  val extracted = Project.extract(state)
-  val v = extracted get version
-  val org = extracted get organization
-  val modules = coreName :: Nil
-  val snapshotOrRelease = if (extracted get isSnapshot) "snapshots" else "releases"
-  val readme = "README.md"
-  val readmeFile = file(readme)
-  val newReadme = Predef
-    .augmentString(IO.read(readmeFile))
-    .lines
-    .map { line =>
-      val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
-      if (line.startsWith("libraryDependencies") && matchReleaseOrSnapshot) {
-        val i = modules.map("\"" + _ + "\"").indexWhere(line.contains)
-        s"""libraryDependencies += "$org" %% "${modules(i)}" % "$v""""
-      } else line
-    }
-    .mkString("", "\n", "\n")
-  IO.write(readmeFile, newReadme)
-  val git = new sbtrelease.Git(extracted get baseDirectory)
-  git.add(readme) ! state.log
-  git.commit(message = "update " + readme, sign = false, signOff = false) ! state.log
-  sys.process.Process("git diff HEAD^") ! state.log
-  state
+lazy val updateReadmeTask = {
+  state: State =>
+    val extracted = Project.extract(state)
+    val v = extracted get version
+    val org = extracted get organization
+    val modules = coreName :: Nil
+    val snapshotOrRelease = if (extracted get isSnapshot) "snapshots" else "releases"
+    val readme = "README.md"
+    val readmeFile = file(readme)
+    val newReadme = Predef
+      .augmentString(IO.read(readmeFile))
+      .lines
+      .map { line =>
+        val matchReleaseOrSnapshot = line.contains("SNAPSHOT") == v.contains("SNAPSHOT")
+        if (line.startsWith("libraryDependencies") && matchReleaseOrSnapshot) {
+          val i = modules.map("\"" + _ + "\"").indexWhere(line.contains)
+          s"""libraryDependencies += "$org" %% "${modules(i)}" % "$v""""
+        } else line
+      }
+      .mkString("", "\n", "\n")
+    IO.write(readmeFile, newReadme)
+    val git = new sbtrelease.Git(extracted get baseDirectory)
+    git.add(readme) ! state.log
+    git.commit(message = "update " + readme, sign = false, signOff = false) ! state.log
+    sys.process.Process("git diff HEAD^") ! state.log
+    state
 }
 
 lazy val updateReadmeProcess: ReleaseStep = updateReadmeTask
