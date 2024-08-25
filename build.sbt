@@ -100,25 +100,21 @@ lazy val compileSettings = Seq(
       Nil
     } else {
       unusedWarnings ++ Seq(
-        "-Xlint",
-        "-Xfuture"
+        "-Xlint"
       )
     }
   },
   scalacOptions ++= {
     scalaBinaryVersion.value match {
       case "2.12" =>
-        Seq("-Xsource:3", "-language:higherKinds")
+        Seq(
+          "-Yno-adapted-args",
+          "-Xsource:3",
+          "-language:higherKinds",
+          "-Xfuture"
+        )
       case "2.13" =>
         Seq("-Xsource:3-cross")
-      case _ =>
-        Nil
-    }
-  },
-  scalacOptions ++= {
-    CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, v)) if v <= 12 =>
-        Seq("-Yno-adapted-args")
       case _ =>
         Nil
     }
