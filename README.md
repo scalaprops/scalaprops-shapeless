@@ -2,9 +2,8 @@
 
 Generation of arbitrary case classes / ADTs instances with [scalaprops](https://github.com/scalaprops/scalaprops) and [shapeless](https://github.com/milessabin/shapeless) ported from [alexarchambault/scalacheck-shapeless](https://github.com/alexarchambault/scalacheck-shapeless).
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.github.scalaprops/scalaprops-shapeless_2.12.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.scalaprops/scalaprops-shapeless_2.12)
-[![scaladoc](https://javadoc.io/badge2/com.github.scalaprops/scalaprops-shapeless_2.13/javadoc.svg)](https://javadoc.io/doc/com.github.scalaprops/scalaprops-shapeless_2.13)
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.4.0.svg)](https://www.scala-js.org)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.scalaprops/scalaprops-shapeless_3.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.scalaprops/scalaprops-shapeless_3)
+[![scaladoc](https://javadoc.io/badge2/com.github.scalaprops/scalaprops-shapeless_3/javadoc.svg)](https://javadoc.io/doc/com.github.scalaprops/scalaprops-shapeless_3)
 
 ## Usage
 
