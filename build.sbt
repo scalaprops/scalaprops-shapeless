@@ -106,6 +106,16 @@ lazy val compileSettings = Seq(
     }
   },
   scalacOptions ++= {
+    scalaBinaryVersion.value match {
+      case "2.12" =>
+        Seq("-Xsource:3", "-language:higherKinds")
+      case "2.13" =>
+        Seq("-Xsource:3-cross")
+      case _ =>
+        Nil
+    }
+  },
+  scalacOptions ++= {
     CrossVersion.partialVersion(scalaVersion.value) match {
       case Some((2, v)) if v <= 12 =>
         Seq("-Yno-adapted-args")
@@ -117,7 +127,6 @@ lazy val compileSettings = Seq(
     "-deprecation",
     "-unchecked",
     "-language:existentials",
-    "-language:higherKinds",
     "-language:implicitConversions"
   )
 ) ++ Seq(Compile, Test).flatMap(c => c / console / scalacOptions --= unusedWarnings)
