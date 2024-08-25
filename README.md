@@ -9,11 +9,10 @@ Generation of arbitrary case classes / ADTs instances with [scalaprops](https://
 ## Usage
 
 Add to your `build.sbt`
+
 ```scala
 libraryDependencies += "com.github.scalaprops" %% "scalaprops-shapeless" % "0.6.0"
 ```
-
-scalaprops-shapeless depends on shapeless 2.3.
 
 Import the content of `scalaprops.ScalapropsShapeless` close to where you want
 `scalaprops.Gen` type classes to be automatically available for case classes / sealed hierarchies,
