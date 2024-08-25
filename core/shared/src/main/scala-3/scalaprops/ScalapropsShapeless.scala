@@ -1,6 +1,7 @@
 package scalaprops
 
 import shapeless3.deriving.K0
+import scala.deriving.Mirror
 
 sealed abstract class ScalapropsShapelessInstances {
 
@@ -32,13 +33,13 @@ sealed abstract class ScalapropsShapelessInstances {
       (x, y.get)
     )
 
-  inline implicit def genCoproduct[A](using inst: => K0.CoproductInstances[Gen, A]): Gen[A] =
+  inline implicit def genCoproduct[A](using inst: => K0.CoproductInstances[Gen, A], mirror: Mirror.SumOf[A]): Gen[A] =
     Gen.gen[A]((size, r1) =>
       val (r2, i) = r1.nextInt
       val index = if (i == Int.MinValue) {
         0
       } else {
-        i.abs % inst.is.length
+        i.abs % valueOf[Tuple.Size[mirror.MirroredElemTypes]]
       }
       inst.inject[(Rand, A)](index) {
         [t <: A] => (g: Gen[t]) => g.f(size, r2)
