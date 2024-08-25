@@ -5,21 +5,24 @@ import scala.deriving.Mirror
 
 sealed abstract class ScalapropsShapelessInstances {
 
-  inline implicit def cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
+  final def cogenFromPolyFunction[A](f: [t] => (a: A, s: CogenState[t]) => CogenState[t]): Cogen[A] =
     new Cogen[A] {
-      override def cogen[B](a: A, s: CogenState[B]) = {
-        inst.fold(a)([t] => (c: Cogen[t], t: t) => c.cogen(t, s))
-      }
+      override def cogen[B](a: A, s: CogenState[B]) = f[B](a, s)
     }
 
+  inline implicit def cogenCoproduct[A](using inst: => K0.CoproductInstances[Cogen, A]): Cogen[A] =
+    cogenFromPolyFunction[A](
+      [B] => (a: A, s: CogenState[B]) => inst.fold(a)([t <: A] => (c: Cogen[t], t: t) => c.cogen(t, s))
+    )
+
   inline implicit def cogenProduct[A](using inst: => K0.ProductInstances[Cogen, A]): Cogen[A] =
-    new Cogen[A] {
-      override def cogen[B](a: A, s: CogenState[B]) = {
-        inst.foldLeft[CogenState[B]](a)(s)(
-          [t] => (acc: CogenState[B], c: Cogen[t], t: t) => c.cogen(t, acc)
+    cogenFromPolyFunction[A](
+      [B] =>
+        (a: A, s: CogenState[B]) =>
+          inst.foldLeft[CogenState[B]](a)(s)(
+            [t] => (acc: CogenState[B], c: Cogen[t], t: t) => c.cogen(t, acc)
         )
-      }
-    }
+    )
 
   inline implicit def genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
     Gen.gen[A] { (size, rand) =>
