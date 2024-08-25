@@ -20,12 +20,12 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
       if (scalaBinaryVersion.value == "3") {
         Seq(
           "com.github.scalaprops" %%% "scalaprops-gen" % scalapropsVersion.value,
-          "org.typelevel" %%% "shapeless3-deriving" % "3.4.1"
+          "org.typelevel" %%% "shapeless3-deriving" % "3.4.3"
         )
       } else {
         Seq(
           "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value,
-          "com.chuusai" %%% "shapeless" % "2.3.11"
+          "com.chuusai" %%% "shapeless" % "2.3.12"
         )
       }
     }
