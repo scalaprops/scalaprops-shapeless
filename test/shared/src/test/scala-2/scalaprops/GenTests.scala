@@ -690,22 +690,21 @@ object GenTests extends Scalaprops {
     case object B extends X
     case object C extends X
 
-    Property.forAll {
-      seed: Long =>
-        val result = Gen[X]
-          .samples(
-            listSize = 12000,
-            seed = seed
-          )
-          .groupBy(_.getClass)
-          .map { case (k, v) => k -> v.size }
-        result.foreach { x =>
-          val n = x._2
-          if (n < 3000 || 5000 < n) {
-            sys.error(result.toString)
-          }
+    Property.forAll { (seed: Long) =>
+      val result = Gen[X]
+        .samples(
+          listSize = 12000,
+          seed = seed
+        )
+        .groupBy(_.getClass)
+        .map { case (k, v) => k -> v.size }
+      result.foreach { x =>
+        val n = x._2
+        if (n < 3000 || 5000 < n) {
+          sys.error(result.toString)
         }
-        true
+      }
+      true
     }
   }
 

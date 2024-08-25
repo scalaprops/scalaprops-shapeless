@@ -18,7 +18,7 @@ object ShrinkTests extends Scalaprops {
   private[this] implicit val genString: Gen[String] =
     Gen.asciiString
 
-  private[this] implicit val shrinkString =
+  private[this] implicit val shrinkString: Shrink[String] =
     Shrink[List[Char]].xmap[String](_.mkString, _.toCharArray.toList)
 
   lazy val expectedListIntShrink =
