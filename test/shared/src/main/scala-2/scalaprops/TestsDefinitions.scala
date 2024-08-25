@@ -2,9 +2,9 @@ package scalaprops
 
 import scalaprops.derive.Recursive
 
-import shapeless.{Lazy => _, _}
-import shapeless.record._
-import shapeless.union._
+import shapeless.{Lazy as _, *}
+import shapeless.record.*
+import shapeless.union.*
 
 object TestsDefinitions {
   case class Simple(i: Int, s: String, blah: Boolean)

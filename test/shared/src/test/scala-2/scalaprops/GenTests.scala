@@ -1,18 +1,18 @@
 package scalaprops
 
-import scalaprops.derive._
+import scalaprops.derive.*
 
-import shapeless._
+import shapeless.*
 import shapeless.labelled.FieldType
-import shapeless.record._
-import shapeless.union._
+import shapeless.record.*
+import shapeless.union.*
 import shapeless.test.illTyped
 
-import Util._
+import Util.*
 
 object GenTests extends Scalaprops {
-  import TestsDefinitions._
-  import ScalapropsShapeless._
+  import TestsDefinitions.*
+  import ScalapropsShapeless.*
 
   private[this] implicit val genString: Gen[String] =
     Gen.asciiString
@@ -709,7 +709,7 @@ object GenTests extends Scalaprops {
   }
 
   object NoTC {
-    import NoTCDefinitions._
+    import NoTCDefinitions.*
 
     illTyped("""
       Gen[NoGenType]

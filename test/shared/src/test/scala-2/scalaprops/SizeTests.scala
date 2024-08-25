@@ -1,15 +1,15 @@
 package scalaprops
 
 object SizeTests0 {
-  import scalaprops.ScalapropsShapeless._
+  import scalaprops.ScalapropsShapeless.*
 
-  import SizeTestsDefinitions._
+  import SizeTestsDefinitions.*
 
   val genTree = Gen[Tree]
 }
 
 object SizeTests extends Scalaprops {
-  import SizeTestsDefinitions._
+  import SizeTestsDefinitions.*
 
   assert(Leaf.depth == 0)
   assert(Branch(Leaf, Leaf).depth == 1)

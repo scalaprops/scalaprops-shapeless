@@ -1,6 +1,6 @@
 package scalaprops
 
-import derive._
+import derive.*
 
 sealed abstract class ScalapropsShapeless
     extends SingletonInstances

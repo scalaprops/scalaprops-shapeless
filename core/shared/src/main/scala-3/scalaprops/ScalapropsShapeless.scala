@@ -22,7 +22,7 @@ sealed abstract class ScalapropsShapelessInstances {
     }
 
   inline implicit def genProduct[A](using inst: => K0.ProductInstances[Gen, A]): Gen[A] =
-    Gen.gen[A]((size, rand) =>
+    Gen.gen[A] { (size, rand) =>
       val (x, y) = inst.unfold[Rand](rand) {
         [t] =>
           (r: Rand, g: Gen[t]) => {
@@ -31,10 +31,10 @@ sealed abstract class ScalapropsShapelessInstances {
         }
       }
       (x, y.get)
-    )
+    }
 
   inline implicit def genCoproduct[A](using inst: => K0.CoproductInstances[Gen, A], mirror: Mirror.SumOf[A]): Gen[A] =
-    Gen.gen[A]((size, r1) =>
+    Gen.gen[A] { (size, r1) =>
       val (r2, i) = r1.nextInt
       val index = if (i == Int.MinValue) {
         0
@@ -44,7 +44,7 @@ sealed abstract class ScalapropsShapelessInstances {
       inst.inject[(Rand, A)](index) {
         [t <: A] => (g: Gen[t]) => g.f(size, r2)
       }
-    )
+    }
 
 }
 

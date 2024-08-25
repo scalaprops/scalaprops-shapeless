@@ -1,12 +1,12 @@
 package scalaprops
 
-import shapeless._
+import shapeless.*
 import scalaprops.Property.forAll
 
 import Util.validateSingletons
 
 object SingletonsTests extends Scalaprops {
-  import SingletonsTestsDefinitions._
+  import SingletonsTestsDefinitions.*
 
   val hnil = forAll {
     validateSingletons[HNil](HNil)

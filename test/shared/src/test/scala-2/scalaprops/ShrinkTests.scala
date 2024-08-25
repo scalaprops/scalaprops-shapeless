@@ -1,16 +1,16 @@
 package scalaprops
 
-import scalaprops.ScalapropsShapeless._
-import scalaprops.derive._
-import shapeless._
-import shapeless.labelled._
+import scalaprops.ScalapropsShapeless.*
+import scalaprops.derive.*
+import shapeless.*
+import shapeless.labelled.*
 import shapeless.record.Record
 import shapeless.union.Union
 
-import Util._
+import Util.*
 
 object ShrinkTests extends Scalaprops {
-  import TestsDefinitions._
+  import TestsDefinitions.*
 
   private[this] implicit val shrinkChar: Shrink[Char] =
     Shrink.long.xmap(_.toChar, x => x)
