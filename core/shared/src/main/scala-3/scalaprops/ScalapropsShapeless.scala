@@ -40,14 +40,9 @@ sealed abstract class ScalapropsShapelessInstances {
       } else {
         i.abs % inst.is.length
       }
-      val (x, y) = inst.project[Rand](index)(r2) {
-        [t] =>
-          (r3: Rand, g: Gen[t]) => {
-            val (r4, a) = g.f(size, r3)
-            (r4, Option(a))
-        }
+      inst.inject[(Rand, A)](index) {
+        [t <: A] => (g: Gen[t]) => g.f(size, r2)
       }
-      (x, y.get)
     )
 
 }
