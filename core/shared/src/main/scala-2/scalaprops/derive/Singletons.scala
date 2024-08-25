@@ -1,7 +1,7 @@
 package scalaprops.derive
 
-import shapeless._
-import shapeless.labelled._
+import shapeless.*
+import shapeless.labelled.*
 
 /**
  * Type class providing the instances of `T` that can be built out of

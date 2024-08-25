@@ -2,7 +2,7 @@ package scalaprops.derive
 
 import scalaprops.{Cogen, Gen, Shrink}
 import shapeless.{Coproduct, HList, LowPriority, Strict, Witness}
-import shapeless.labelled._
+import shapeless.labelled.*
 
 trait SingletonInstances {
   implicit def genSingletonType[S](implicit w: Witness.Aux[S]): Gen[S] =

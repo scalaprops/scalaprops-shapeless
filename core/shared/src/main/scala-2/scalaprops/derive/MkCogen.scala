@@ -1,7 +1,7 @@
 package scalaprops
 package derive
 
-import shapeless._
+import shapeless.*
 
 /**
  * Derives `Cogen[T]` instances for `T` an `HList`, a `Coproduct`,

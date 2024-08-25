@@ -1,17 +1,17 @@
 package scalaprops
 
-import scalaprops.derive._
+import scalaprops.derive.*
 
-import shapeless._
+import shapeless.*
 import shapeless.labelled.FieldType
 import shapeless.record.Record
 import shapeless.union.Union
 
-import Util._
+import Util.*
 
 object CogenTests extends Scalaprops {
-  import TestsDefinitions._
-  import ScalapropsShapeless._
+  import TestsDefinitions.*
+  import ScalapropsShapeless.*
 
   private[this] implicit val genString: Gen[String] =
     Gen.asciiString
