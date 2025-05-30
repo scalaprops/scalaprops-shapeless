@@ -9,7 +9,7 @@ object SizeTestsDefinitions {
 
       def handle(t: Tree, s: Int) =
         t match {
-          case Leaf => max = max max s
+          case Leaf      => max = max max s
           case b: Branch =>
             m += (s + 1) -> b
         }
