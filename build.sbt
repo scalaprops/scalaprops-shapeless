@@ -159,12 +159,12 @@ lazy val noPublishSettings = Seq(
   publishArtifact := false
 )
 
-lazy val updateReadmeTask = { state: State =>
+lazy val updateReadmeTask: State => State = { state =>
   val extracted = Project.extract(state)
-  val v = extracted get version
-  val org = extracted get organization
+  val v = extracted.get(version)
+  val org = extracted.get(organization)
   val modules = coreName :: Nil
-  val snapshotOrRelease = if (extracted get isSnapshot) "snapshots" else "releases"
+  val snapshotOrRelease = if (extracted.get(isSnapshot)) "snapshots" else "releases"
   val readme = "README.md"
   val readmeFile = file(readme)
   val newReadme = Predef
@@ -179,7 +179,7 @@ lazy val updateReadmeTask = { state: State =>
     }
     .mkString("", "\n", "\n")
   IO.write(readmeFile, newReadme)
-  val git = new sbtrelease.Git(extracted get baseDirectory)
+  val git = new sbtrelease.Git(extracted.get(baseDirectory))
   git.add(readme) ! state.log
   git.commit(message = "update " + readme, sign = false, signOff = false) ! state.log
   sys.process.Process("git diff HEAD^") ! state.log
