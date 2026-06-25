@@ -1,83 +1,106 @@
-import sbtcrossproject.CrossPlugin.autoImport.crossProject
-
 lazy val tagName = Def.setting {
   s"v${if (releaseUseGlobalVersion.value) (ThisBuild / version).value else version.value}"
 }
 lazy val tagOrHash = Def.setting {
-  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lineStream_!.head
+  if (isSnapshot.value) sys.process.Process("git rev-parse HEAD").lazyLines_!.head
   else tagName.value
 }
 
-commonSettings
-noPublishSettings
+val scalaVersions = Seq("2.12.21", "2.13.18", "3.3.8")
 
-lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
-  .settings(commonSettings)
+val scalapropsShapelessRoot = rootProject.autoAggregate.settings(
+  commonSettings,
+  noPublishSettings,
+  TaskKey[Unit]("testSequential") := Def.uncached(
+    Def
+      .sequential(
+        (core.projectRefs ++ test.projectRefs).map(_ / Test / testFull)
+      )
+      .value
+  ),
+  autoScalaLibrary := false
+)
+
+lazy val core = projectMatrix
+  .in(file("core"))
+  .defaultAxes()
   .settings(
+    commonSettings,
     name := coreName,
     moduleName := coreName,
     libraryDependencies ++= {
       if (scalaBinaryVersion.value == "3") {
         Seq(
-          "com.github.scalaprops" %%% "scalaprops-gen" % scalapropsVersion.value,
-          "org.typelevel" %%% "shapeless3-deriving" % "3.6.0"
+          "com.github.scalaprops" %% "scalaprops-gen" % scalapropsVersion.value,
+          "org.typelevel" %% "shapeless3-deriving" % "3.6.0"
         )
       } else {
         Seq(
-          "com.github.scalaprops" %%% "scalaprops-core" % scalapropsVersion.value,
-          "com.chuusai" %%% "shapeless" % "2.3.13"
+          "com.github.scalaprops" %% "scalaprops-core" % scalapropsVersion.value,
+          "com.chuusai" %% "shapeless" % "2.3.13"
         )
       }
     }
   )
-  .jsSettings(
-    scalacOptions += {
-      val a = (LocalRootProject / baseDirectory).value.toURI.toString
-      val g = "https://raw.githubusercontent.com/scalaprops/scalaprops-shapeless/" + tagOrHash.value
-      val key = scalaBinaryVersion.value match {
-        case "3" =>
-          "-scalajs-mapSourceURI"
-        case _ =>
-          "-P:scalajs:mapSourceURI"
-      }
-      s"${key}:$a->$g/"
-    },
-    Test / scalaJSStage := FastOptStage
+  .jvmPlatform(
+    scalaVersions,
+    Def.settings(
+    )
+  )
+  .nativePlatform(
+    scalaVersions,
+    Def.settings(
+    )
+  )
+  .jsPlatform(
+    scalaVersions,
+    Def.settings(
+      scalacOptions += {
+        val a = (LocalRootProject / baseDirectory).value.toURI.toString
+        val g = "https://raw.githubusercontent.com/scalaprops/scalaprops-shapeless/" + tagOrHash.value
+        val key = scalaBinaryVersion.value match {
+          case "3" =>
+            "-scalajs-mapSourceURI"
+          case _ =>
+            "-P:scalajs:mapSourceURI"
+        }
+        s"${key}:$a->$g/"
+      },
+      Test / scalaJSStage := FastOptStage
+    )
   )
 
-lazy val coreJVM = core.jvm
-lazy val coreJS = core.js
-lazy val coreNative = core.native
-
-lazy val test = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val test = projectMatrix
+  .defaultAxes()
   .dependsOn(core)
-  .settings(commonSettings)
   .settings(
-    libraryDependencies += "com.github.scalaprops" %%% "scalaprops" % scalapropsVersion.value % "test"
+    commonSettings,
+    libraryDependencies += "com.github.scalaprops" %% "scalaprops" % scalapropsVersion.value % "test",
+    noPublishSettings
   )
-  .settings(noPublishSettings)
-  .jsSettings(
-    Test / scalaJSStage := FastOptStage
+  .jvmPlatform(
+    scalaVersions,
+    Def.settings(
+    )
   )
-  .nativeSettings(
-    scalapropsNativeSettings
+  .jsPlatform(
+    scalaVersions,
+    Def.settings(
+      Test / scalaJSStage := FastOptStage
+    )
   )
-
-lazy val testJVM = test.jvm
-lazy val testJS = test.js
-lazy val testNative = test.native
+  .nativePlatform(
+    scalaVersions,
+    Def.settings(
+      scalapropsNativeSettings
+    )
+  )
 
 lazy val coreName = "scalaprops-shapeless"
 
-def Scala212 = "2.12.21"
-def Scala3 = "3.3.8"
-
 lazy val commonSettings = Def.settings(
-  scalaVersion := Scala212,
-  crossScalaVersions := Scala212 :: "2.13.18" :: Scala3 :: Nil,
   publishTo := (if (isSnapshot.value) None else localStaging.value),
   releaseTagName := tagName.value,
-  releaseCrossBuild := true,
   commands += Command.command("updateReadme")(updateReadmeTask),
   organization := "com.github.scalaprops",
   scalapropsVersion := "0.11.0"
@@ -198,18 +221,10 @@ releaseProcess := Seq[ReleaseStep](
   commitReleaseVersion,
   updateReadmeProcess,
   tagRelease,
-  ReleaseStep(
-    action = { state =>
-      val extracted = Project extract state
-      extracted.runAggregated(extracted.get(thisProjectRef) / (Global / PgpKeys.publishSigned), state)
-    },
-    enableCrossBuild = true
-  ),
+  releaseStepCommandAndRemaining(PgpKeys.publishSigned.key.label),
   releaseStepCommandAndRemaining("sonaRelease"),
   setNextVersion,
   commitNextVersion,
   updateReadmeProcess,
   pushChanges
 )
-
-// build.sbt shamelessly inspired by https://github.com/fthomas/refined/blob/master/build.sbt
