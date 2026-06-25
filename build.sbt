@@ -75,7 +75,7 @@ def Scala3 = "3.3.8"
 lazy val commonSettings = Def.settings(
   scalaVersion := Scala212,
   crossScalaVersions := Scala212 :: "2.13.18" :: Scala3 :: Nil,
-  publishTo := sonatypePublishToBundle.value,
+  publishTo := (if (isSnapshot.value) None else localStaging.value),
   releaseTagName := tagName.value,
   releaseCrossBuild := true,
   commands += Command.command("updateReadme")(updateReadmeTask),
@@ -206,7 +206,7 @@ releaseProcess := Seq[ReleaseStep](
     },
     enableCrossBuild = true
   ),
-  releaseStepCommandAndRemaining("sonatypeBundleRelease"),
+  releaseStepCommandAndRemaining("sonaRelease"),
   setNextVersion,
   commitNextVersion,
   updateReadmeProcess,
