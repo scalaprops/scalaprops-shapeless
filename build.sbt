@@ -151,13 +151,13 @@ lazy val compileSettings = Seq(
 ) ++ Seq(Compile, Test).flatMap(c => c / console / scalacOptions --= unusedWarnings)
 
 lazy val publishSettings = Seq(
-  homepage := Some(url("https://github.com/scalaprops/scalaprops-shapeless")),
+  homepage := Some(uri("https://github.com/scalaprops/scalaprops-shapeless")),
   licenses := Seq(
-    "Apache 2.0" -> url("http://opensource.org/licenses/Apache-2.0")
+    "Apache 2.0" -> uri("http://opensource.org/licenses/Apache-2.0")
   ),
   scmInfo := Some(
     ScmInfo(
-      url("https://github.com/scalaprops/scalaprops-shapeless.git"),
+      uri("https://github.com/scalaprops/scalaprops-shapeless.git"),
       "scm:git:github.com/scalaprops/scalaprops-shapeless.git",
       Some("scm:git:git@github.com:scalaprops/scalaprops-shapeless.git")
     )
@@ -167,7 +167,7 @@ lazy val publishSettings = Seq(
       "xuwei-k",
       "Kenji Yoshida",
       "",
-      url("https://github.com/xuwei-k")
+      uri("https://github.com/xuwei-k")
     )
   ),
   publishMavenStyle := true,
