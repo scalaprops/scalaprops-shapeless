@@ -6,7 +6,7 @@ lazy val tagOrHash = Def.setting {
   else tagName.value
 }
 
-val scalaVersions = Seq("2.12.21", "2.13.18", "3.3.8")
+val scalaVersions = Seq("2.12.21", "3.9.0", "3.3.8")
 
 val scalapropsShapelessRoot = rootProject.autoAggregate.settings(
   commonSettings,
