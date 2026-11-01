@@ -22,7 +22,7 @@ object SizeTests extends Scalaprops {
     300 -> 10
   )
 
-  val tree = Property.forAll {
+  property("tree") = Property.forAll {
     val seed = System.currentTimeMillis()
     val inspect = 10000
 

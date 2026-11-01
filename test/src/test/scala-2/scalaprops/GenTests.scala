@@ -548,17 +548,17 @@ object GenTests extends Scalaprops {
       )
       .gen
 
-  val compareSuccess = Property.forAll {
+  property("compareSuccess") = Property.forAll {
     val g = Gen[Int]
     compareGen(g, g)
   }
 
-  val compareFailure = Property.forAll {
+  property("compareFailure") = Property.forAll {
     val gen = Gen[Int]
     compareGen(gen, gen.map(_ + 1)) == false
   }
 
-  val empty = Property.forAll {
+  property("empty") = Property.forAll {
     val expectedGen =
       MkGen
         .genericProduct(
@@ -571,7 +571,7 @@ object GenTests extends Scalaprops {
     compareGen(expectedGen, gen)
   }
 
-  val emptyCC = Property.forAll {
+  property("emptyCC") = Property.forAll {
     val expectedGen =
       MkGen
         .genericProduct(
@@ -584,74 +584,74 @@ object GenTests extends Scalaprops {
     compareGen(expectedGen, gen)
   }
 
-  val simple = Property.forAll {
+  property("simple") = Property.forAll {
     val gen = Gen[Simple]
     compareGen(expectedSimpleGen, gen)
   }
 
-  val simpleHList = Property.forAll {
+  property("simpleHList") = Property.forAll {
     val gen = Gen[Int :: String :: Boolean :: HNil]
     compareGen(expectedIntStringBoolGen, gen)
   }
 
-  val simpleCoproduct = Property.forAll {
+  property("simpleCoproduct") = Property.forAll {
     val gen = Gen[Int :+: String :+: Boolean :+: CNil]
     compareGen(expectedIntStringBoolCoproductGen, gen)
   }
 
-  val composed = Property.forAll {
+  property("composed") = Property.forAll {
     val gen = Gen[Composed]
     compareGen(expectedComposedGen, gen)
   }
 
-  val twiceComposed = Property.forAll {
+  property("twiceComposed") = Property.forAll {
     val gen = Gen[TwiceComposed]
     compareGen(expectedTwiceComposedGen, gen)
   }
 
-  val composedOptList = Property.forAll {
+  property("composedOptList") = Property.forAll {
     val gen = Gen[ComposedOptList]
     compareGen(expectedComposedOptListGen, gen)
   }
 
-  val base = Property.forAll {
+  property("base") = Property.forAll {
     val gen = Gen[Base]
     compareGen(expectedBaseGen, gen)
   }
 
-  val tree1 = Property.forAll {
+  property("tree1") = Property.forAll {
     val gen = Gen[T1.Tree]
     compareGen(expectedT1TreeGen, gen)
   }
 
-  val tree2 = Property.forAll {
+  property("tree2") = Property.forAll {
     val gen = Gen[T2.Tree]
     compareGen(expectedT2TreeGen, gen)
   }
 
-  val a = Property.forAll {
+  property("a") = Property.forAll {
     val gen = Gen[A]
     compareGen(expectedAGen, gen)
   }
 
-  val d = Property.forAll {
+  property("d") = Property.forAll {
     val gen = Gen[D]
     compareGen(expectedDGen, gen)
   }
 
-  val list = Property.forAll {
+  property("list") = Property.forAll {
     val expected = Gen.list[Int](Gen[Int])
     val gen = Gen[List[Int]]
     compareGen(expected, gen)
   }
 
-  val option = Property.forAll {
+  property("option") = Property.forAll {
     val expected = Gen.option(Gen[Int])
     val gen = Gen[Option[Int]]
     compareGen(expected, gen)
   }
 
-  val singleton = Properties.list(
+  property("singleton") = Properties.list(
     Property.forAll {
       val expected = Gen.value[Witness.`2`.T](2)
       val gen = Gen[Witness.`2`.T]
@@ -665,7 +665,7 @@ object GenTests extends Scalaprops {
     }.toProperties("ADT")
   )
 
-  val testShapeless = Properties.list(
+  property("shapeless") = Properties.list(
     Property.forAll {
       val gen = Gen[L]
       compareGen(expectedLGen, gen)
@@ -684,7 +684,7 @@ object GenTests extends Scalaprops {
     }.toProperties("union")
   )
 
-  val coproductNotBias = {
+  property("coproductNotBias") = {
     sealed abstract class X
     case object A extends X
     case object B extends X

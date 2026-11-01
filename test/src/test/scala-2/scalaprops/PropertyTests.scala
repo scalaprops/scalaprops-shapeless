@@ -4,7 +4,7 @@ import ScalapropsShapeless.*
 import scalaprops.TestsDefinitions.{T1, T1NoRecursiveTC}
 
 object PropertyTests extends Scalaprops {
-  val oneElementAdt = {
+  property("oneElementAdt") = {
     sealed trait Foo
     case object Bar extends Foo
 
@@ -13,7 +13,7 @@ object PropertyTests extends Scalaprops {
     }
   }
 
-  val twoElementAdt = {
+  property("twoElementAdt") = {
     sealed trait Or[+A, +B] extends Product with Serializable
     case class Left[A](a: A) extends Or[A, Nothing]
     case class Right[B](b: B) extends Or[Nothing, B]
@@ -23,7 +23,7 @@ object PropertyTests extends Scalaprops {
     }
   }
 
-  val recursiveADT = {
+  property("recursiveADT") = {
     case class Node[T](value: T, left: Option[Node[T]], right: Option[Node[T]])
 
     Property.forAll { (f: Int => Node[Int]) =>
@@ -32,12 +32,12 @@ object PropertyTests extends Scalaprops {
     }
   }.ignore("TODO stack overflow")
 
-  val recursiveADT1 = Property.forAll { (f: Int => T1.Tree) =>
+  property("recursiveADT1") = Property.forAll { (f: Int => T1.Tree) =>
     f(0)
     true
   }
 
-  val recursiveADT2 = {
+  property("recursiveADT2") = {
     Property.forAll { (f: Int => T1NoRecursiveTC.Tree) =>
       f(0)
       true
