@@ -98,37 +98,37 @@ object ShrinkTests extends Scalaprops {
       )
       .shrink
 
-  val listInt = {
+  property("listInt") = {
     val shrink = Shrink[List[Int]]
     compareShrink(shrink, expectedListIntShrink)
   }
 
-  val optionInt = {
+  property("optionInt") = {
     val shrink = Shrink[Option[Int]]
     compareShrink(shrink, expectedOptionIntShrink)
   }
 
-  val simple = {
+  property("simple") = {
     val shrink = Shrink[Simple]
     compareShrink(shrink, expectedSimpleShrink)
   }
 
-  val simpleHList = {
+  property("simpleHList") = {
     val shrink = Shrink[Int :: String :: Boolean :: HNil]
     compareShrink(shrink, expectedIntStringBoolShrink)
   }
 
-  val simpleCoproduct = {
+  property("simpleCoproduct") = {
     val shrink = Shrink[Int :+: String :+: Boolean :+: CNil]
     compareShrink(shrink, expectedIntStringBoolCoproductShrink)
   }
 
-  val simpleRecord = {
+  property("simpleRecord") = {
     val shrink = Shrink[Rec]
     compareShrink(shrink, expectedRecShrink)
   }
 
-  val simpleUnion = {
+  property("simpleUnion") = {
     val shrink = Shrink[Un]
     compareShrink(shrink, expectedUnionShrink)
   }

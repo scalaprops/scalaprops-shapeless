@@ -8,27 +8,27 @@ import Util.validateSingletons
 object SingletonsTests extends Scalaprops {
   import SingletonsTestsDefinitions.*
 
-  val hnil = forAll {
+  property("hnil") = forAll {
     validateSingletons[HNil](HNil)
   }
 
-  val caseObject = forAll {
+  property("caseObject") = forAll {
     validateSingletons[CaseObj.type](CaseObj)
   }
 
-  val emptyCaseClass = forAll {
+  property("emptyCaseClass") = forAll {
     validateSingletons[Empty](Empty())
   }
 
-  val adt = forAll {
+  property("adt") = forAll {
     validateSingletons[Base](BaseEmpty(), BaseObj)
   }
 
-  val adtNotAllSingletons = forAll {
+  property("adtNotAllSingletons") = forAll {
     validateSingletons[BaseMore](BaseMoreEmpty(), BaseMoreObj)
   }
 
-  val nonSingletonCaseClass = forAll {
+  property("nonSingletonCaseClass") = forAll {
     validateSingletons[NonSingleton]()
   }
 }

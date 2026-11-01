@@ -92,7 +92,6 @@ lazy val test = projectMatrix
   .nativePlatform(
     scalaVersions,
     Def.settings(
-      scalapropsNativeSettings
     )
   )
 

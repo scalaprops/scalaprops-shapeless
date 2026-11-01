@@ -75,17 +75,17 @@ object CogenTests extends Scalaprops {
       )
       .cogen
 
-  val compareSuccess = Property.forAll {
+  property("compareSuccess") = Property.forAll {
     val cogen = Cogen.cogenInt
     compareCogen(cogen, cogen)
   }
 
-  val compareFailure = Property.forAll {
+  property("compareFailure") = Property.forAll {
     val cogen = Cogen.cogenInt
     compareCogen(cogen, cogen.contramap[Int](_ + 1)) == false
   }
 
-  val empty = Property.forAll {
+  property("empty") = Property.forAll {
     val expectedCogen =
       MkCogen
         .genericProduct(
@@ -98,7 +98,7 @@ object CogenTests extends Scalaprops {
     compareCogen(expectedCogen, cogen)
   }
 
-  val emptyAsSingleton = Property.forAll {
+  property("emptyAsSingleton") = Property.forAll {
     val expectedCogen =
       cogenSingletonType[Empty.type]
 
@@ -106,7 +106,7 @@ object CogenTests extends Scalaprops {
     compareCogen(expectedCogen, cogen)
   }
 
-  val emptyCC = Property.forAll {
+  property("emptyCC") = Property.forAll {
     val expectedCogen =
       MkCogen
         .genericProduct(
@@ -119,27 +119,27 @@ object CogenTests extends Scalaprops {
     compareCogen(expectedCogen, cogen)
   }
 
-  val simple = Property.forAll {
+  property("simple") = Property.forAll {
     val cogen = Cogen[Simple]
     compareCogen(expectedSimpleCogen, cogen)
   }
 
-  val simpleHList = Property.forAll {
+  property("simpleHList") = Property.forAll {
     val cogen = Cogen[Int :: String :: Boolean :: HNil]
     compareCogen(expectedIntStringBoolCogen, cogen)
   }
 
-  val simpleCoproduct = Property.forAll {
+  property("simpleCoproduct") = Property.forAll {
     val cogen = Cogen[Int :+: String :+: Boolean :+: CNil]
     compareCogen(expectedIntStringBoolCoproductCogen, cogen)
   }
 
-  val simpleRec = Property.forAll {
+  property("simpleRec") = Property.forAll {
     val cogen = Cogen[Rec]
     compareCogen(expectedRecCogen, cogen)
   }
 
-  val simpleUnion = Property.forAll {
+  property("simpleUnion") = Property.forAll {
     val cogen = Cogen[Un]
     compareCogen(expectedUnionCogen, cogen)
   }

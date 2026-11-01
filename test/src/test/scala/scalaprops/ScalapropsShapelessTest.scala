@@ -10,11 +10,11 @@ object A1 {
 }
 
 object ScalapropsShapelessTest extends Scalaprops {
-  val genTest1 = Property.forAll { (seed: Long) =>
+  property("genTest1") = Property.forAll { (seed: Long) =>
     Gen[A1].infiniteIterator(seed = seed).take(100).toList.groupBy(_.getClass.getName).size == 2
   }
 
-  val cogenTest1 = Property.forAll { (seed1: Long, r: Rand) =>
+  property("cogenTest1") = Property.forAll { (seed1: Long, r: Rand) =>
     val g = Gen[A1 => A1].f(100, r)._2
     val values: List[A1] = Gen[A1].infiniteIterator(seed = seed1).take(100).toList.map(g.apply)
     values.groupBy(_.getClass.getName).size == 2
