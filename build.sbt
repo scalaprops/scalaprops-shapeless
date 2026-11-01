@@ -103,7 +103,7 @@ lazy val commonSettings = Def.settings(
   releaseTagName := tagName.value,
   commands += Command.command("updateReadme")(updateReadmeTask),
   organization := "com.github.scalaprops",
-  scalapropsVersion := "0.11.1"
+  scalapropsVersion := "0.12.0"
 ) ++ compileSettings ++ publishSettings ++ scalapropsCoreSettings
 
 lazy val unusedWarnings = Seq("-Ywarn-unused")
